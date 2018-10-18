@@ -1,0 +1,8 @@
+RewriteEngine On
+RewriteBase /
+
+RewriteRule ^api/(.*)$ api/public/$1 [L]
+RewriteRule ^images/(.*)$ api/public/$1 [L]
+
+RewriteCond %{REQUEST_URI} !/client/dist/
+RewriteRule ^(.*)$ client/dist/$1 [L,NC]
