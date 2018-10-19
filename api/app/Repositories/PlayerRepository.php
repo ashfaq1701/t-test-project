@@ -3,7 +3,6 @@
 namespace App\Repositories;
 
 use App\Models\Player;
-use function foo\func;
 
 class PlayerRepository {
     public function getQuery($request) {
