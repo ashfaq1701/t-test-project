@@ -5,12 +5,6 @@ const state = {
       permission: 'manage_users',
       icon: 'person',
       route: '/users'
-    },
-    {
-      label: 'Manage Roles',
-      permission: 'manage_roles',
-      icon: 'lock',
-      route: '/roles'
     }
   ]
 }

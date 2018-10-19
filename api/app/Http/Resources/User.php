@@ -18,7 +18,6 @@ class User extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'email' => $this->email,
-            'password_update_required' => $this->password_update_required,
             'roles' => Role::collection($this->roles),
             'profile_photo' => new Photo($this->profile_photo)
         );

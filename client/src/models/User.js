@@ -16,11 +16,10 @@ export default class User {
     }
   }
 
-  constructor ({ id, name, email, password_update_required, roles, profile_photo }) {
+  constructor ({ id, name, email, roles, profile_photo }) {
     this.id = id
     this.name = name
     this.email = email
-    this.password_update_required = password_update_required
     this.profile_photo = null
     if (profile_photo !== null) {
       this.profile_photo = new Photo(profile_photo)

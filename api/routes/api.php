@@ -33,7 +33,6 @@ Route::group(['middleware' => 'guest:api'], function () {
 Route::group(['middleware' => ['auth:api', 'is-active']], function () {
     Route::post('profile', 'Auth\ProfileController@update')->name('UpdateProfile');
     Route::resource('users', 'Api\UsersController', ['except' => ['create', 'edit']]);
-    Route::resource('roles', 'Api\RolesController', ['except' => ['create', 'edit']]);
-    Route::resource('permissions', 'Api\PermissionsController', ['only' => ['index']]);
+    Route::resource('roles', 'Api\RolesController', ['only' => ['index']]);
     Route::resource('photos', 'Api\PhotosController', ['except' => ['create', 'edit']]);
 });

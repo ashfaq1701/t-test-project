@@ -2,7 +2,6 @@
 
 namespace App;
 
-use App\Notifications\AccountCreated;
 use App\Notifications\ConfirmationEmail;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Notifications\Notifiable;
@@ -22,7 +21,7 @@ class User extends Authenticatable implements JWTSubject
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'password_update_required', 'profile_photo_id', 'confirmation_token'
+        'name', 'email', 'password', 'profile_photo_id', 'confirmation_token'
     ];
 
     /**
@@ -73,17 +72,6 @@ class User extends Authenticatable implements JWTSubject
     public function sendConfirmationEmail()
     {
         $this->notify(new ConfirmationEmail());
-    }
-
-    /**
-     * Send account creation notification.
-     *
-     * @param  string  $password
-     * @return void
-     */
-    public function sendAccountCreationEmail($password)
-    {
-        $this->notify(new AccountCreated($password));
     }
 
     /**

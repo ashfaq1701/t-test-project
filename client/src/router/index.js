@@ -44,51 +44,32 @@ const routerOptions = [
     path: '/home',
     name: 'Home',
     component: 'Home',
-    meta: {requiresAuth: true, requireUpdatedPassword: true}
-  },
-  {
-    path: '/roles',
-    name: 'ListRoles',
-    component: 'roles/ListRoles',
-    meta: {requiresAuth: true, requireUpdatedPassword: true}
-  },
-  {
-    path: '/roles/add',
-    name: 'AddRole',
-    component: 'roles/AddRole',
-    meta: {requiresAuth: true, requireUpdatedPassword: true}
-  },
-  {
-    path: '/roles/:id/edit',
-    name: 'EditRole',
-    component: 'roles/EditRole',
-    meta: {requiresAuth: true, requireUpdatedPassword: true},
-    props: true
+    meta: {requiresAuth: true}
   },
   {
     path: '/users',
     name: 'ListUsers',
     component: 'users/ListUsers',
-    meta: {requiresAuth: true, requireUpdatedPassword: true}
+    meta: {requiresAuth: true}
   },
   {
     path: '/users/add',
     name: 'AddUser',
     component: 'users/AddUser',
-    meta: {requiresAuth: true, requireUpdatedPassword: true}
+    meta: {requiresAuth: true}
   },
   {
     path: '/users/:id/edit',
     name: 'EditUser',
     component: 'users/EditUser',
-    meta: {requiresAuth: true, requireUpdatedPassword: true},
+    meta: {requiresAuth: true},
     props: true
   },
   {
     path: '/profile',
     name: 'UserProfile',
     component: 'users/UserProfile',
-    meta: {requiresAuth: true, requireUpdatedPassword: true},
+    meta: {requiresAuth: true},
     props: true
   },
   {
@@ -120,14 +101,10 @@ const router = new Router({
 
 router.beforeEach((to, from, next) => {
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
-  const requireUpdatedPassword = to.matched.some(record => record.meta.requireUpdatedPassword)
   const recordName = to.name
   const isAuthenticated = store.getters.isAuthenticated
-  const isPasswordUpdateRequired = store.getters.isPasswordUpdateRequired
   if (requiresAuth && !isAuthenticated) {
     next('/signin?path=' + encodeURI(to.path))
-  } else if (isAuthenticated && requireUpdatedPassword && isPasswordUpdateRequired) {
-    next('/update-password')
   } else if (isAuthenticated && (recordName === 'Signin' || recordName === 'Signup')) {
     next('/home')
   } else {

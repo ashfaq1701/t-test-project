@@ -23,11 +23,9 @@ class UserRepository {
             $password = $this->generatePassword();
             $req['password'] = Hash::make($password);
         }
-        $req['password_update_required'] = 1;
         $user = User::create($req);
         $roleIds = $request->input('roles');
         $user->roles()->sync($roleIds);
-        $user->sendAccountCreationEmail($password);
         return $user;
     }
 
@@ -82,6 +80,6 @@ class UserRepository {
     }
 
     public function generatePassword() {
-        return str_random(9) . rand(1, 9);
+        return 'abcdefgh1';
     }
 }

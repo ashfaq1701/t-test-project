@@ -20,17 +20,6 @@ const getters = {
   },
   isAuthenticated (state) {
     return state.user !== null && typeof state.user !== 'undefined'
-  },
-  isPasswordUpdateRequired (state) {
-    if (state.user === null || typeof state.user === 'undefined') {
-      return true
-    } else {
-      if (state.user.password_update_required === 1) {
-        return true
-      } else {
-        return false
-      }
-    }
   }
 }
 

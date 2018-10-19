@@ -2,7 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Notifications\AccountCreated;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Spatie\Permission\Models\Role;
@@ -73,9 +72,6 @@ class UserTest extends BaseTestCase
             'Authentication' => 'Bearer ' . $token
         ]);
         $response->assertStatus(201);
-
-        $userCreated = User::query()->where('email', 'LIKE', 'user.xyz1@test.local')->first();
-        Notification::assertSentTo($userCreated, AccountCreated::class);
     }
 
     /**

@@ -1,6 +1,6 @@
 <template>
   <v-navigation-drawer
-    v-if="user !== null && user.hasRole('admin')"
+    v-if="user !== null && (user.hasRole('admin') || user.hasRole('league_manager'))"
     v-model="sidebar" app>
     <v-list>
       <v-list-tile

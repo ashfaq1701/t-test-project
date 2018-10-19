@@ -20,7 +20,6 @@ class CreateUsersTable extends Migration
             $table->string('password')->nullable();
             $table->rememberToken();
             $table->string('confirmation_token', 40)->nullable();
-            $table->tinyInteger('password_update_required')->nullable();
             $table->integer('profile_photo_id')->unsigned()->nullable()->index('fk_users_3_idx');
             $table->timestamps();
         });

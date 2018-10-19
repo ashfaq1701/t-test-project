@@ -16,9 +16,6 @@ class IsActive
         if (!empty($user->confirmation_token)) {
             abort(403, 'Account must be confirmed to make this request');
         }
-        if ($user->password_update_required == 1) {
-            abort(403, 'You need to update your password to make this request');
-        }
 
         return $next($request);
     }

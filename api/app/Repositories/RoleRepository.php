@@ -26,15 +26,4 @@ class RoleRepository
         }
         return $roles;
     }
-
-    public function deleteRole($id) {
-        $role = Role::findOrFail($id);
-        if ($role->name == 'admin') {
-            return response()->json([
-                'message' => 'Couldn\'t delete admin role'
-            ], 403);
-        }
-        $role->delete();
-        return '';
-    }
 }

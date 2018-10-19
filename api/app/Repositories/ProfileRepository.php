@@ -49,7 +49,6 @@ class ProfileRepository {
             throw new ValidationException('Entered old password is incorrect');
         }
         $user->password = Hash::make($request->input('password'));
-        $user->password_update_required = null;
         $user->save();
         return $user;
     }

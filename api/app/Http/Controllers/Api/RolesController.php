@@ -28,39 +28,4 @@ class RolesController extends Controller
         }
         return RoleResource::collection($roles);
     }
-
-    public function store(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|max:50'
-        ]);
-        $role = Role::create($request->only(['name']));
-        $permissionIds = $request->input('permissions');
-        $role->permissions()->sync($permissionIds);
-        return new RoleResource($role);
-    }
-
-    public function show($id)
-    {
-        $role = Role::findOrFail($id);
-        return new RoleResource($role);
-    }
-
-    public function update(Request $request, $id)
-    {
-        $request->validate([
-            'name' => 'required|max:50'
-        ]);
-        $role = Role::findOrFail($id);
-        $role->update($request->only(['name']));
-        $permissionIds = $request->input('permissions');
-        $role->permissions()->sync($permissionIds);
-
-        return new RoleResource($role);
-    }
-
-    public function destroy($id)
-    {
-        return $this->roleRepository->deleteRole($id);
-    }
 }

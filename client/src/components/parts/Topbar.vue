@@ -1,6 +1,6 @@
 <template>
   <v-toolbar app>
-    <v-toolbar-side-icon @click="invertSidebar" v-if="isAdmin"></v-toolbar-side-icon>
+    <v-toolbar-side-icon @click="invertSidebar" v-if="hasSidebar"></v-toolbar-side-icon>
     <v-toolbar-title>
       <router-link to="/" tag="span" style="cursor: pointer">
         {{ appTitle }}
@@ -78,8 +78,8 @@
       user () {
         return this.$store.getters.currentUser
       },
-      isAdmin () {
-        return this.user !== null && this.user.hasRole('admin')
+      hasSidebar () {
+        return this.user !== null && (this.user.hasRole('admin') || this.user.hasRole('league_manager'))
       },
       profilePicture () {
         let fileName = 'user.png'
