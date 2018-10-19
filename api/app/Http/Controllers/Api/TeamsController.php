@@ -13,4 +13,13 @@ class TeamsController extends Controller {
     public function __construct(TeamRepository $teamRepository) {
         $this->teamRepository = $teamRepository;
     }
+
+    public function index(Request $request) {
+        if ($request->has('query')) {
+            $teams = $this->teamRepository->searchTeams($request);
+        } else {
+            $teams = $this->teamRepository->getAllTeams($request);
+        }
+        return TeamResource::collection($teams);
+    }
 }

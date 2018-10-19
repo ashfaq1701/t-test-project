@@ -13,4 +13,9 @@ class PlayerRolesController extends Controller {
     public function __construct(PlayerRoleRepository $playerRoleRepository) {
         $this->playerRoleRepository = $playerRoleRepository;
     }
+
+    public function index() {
+        $playerRoles = $this->playerRoleRepository->getAllPlayerRoles();
+        return PlayerRoleResource::collection($playerRoles);
+    }
 }

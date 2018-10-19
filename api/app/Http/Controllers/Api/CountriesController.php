@@ -13,4 +13,13 @@ class CountriesController extends Controller {
     public function __construct(CountryRepository $countryRepository) {
         $this->countryRepository = $countryRepository;
     }
+
+    public function index(Request $request) {
+        if ($request->has('query')) {
+            $countries = $this->countryRepository->searchCountries($request);
+        } else {
+            $countries = $this->countryRepository->getAllCountries($request);
+        }
+        return CountryResource::collection($countries);
+    }
 }

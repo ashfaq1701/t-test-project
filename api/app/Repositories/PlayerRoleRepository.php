@@ -2,6 +2,10 @@
 
 namespace App\Repositories;
 
-class PlayerRoleRepository {
+use App\Models\PlayerRole;
 
+class PlayerRoleRepository {
+    public function getAllPlayerRoles() {
+        return PlayerRole::all();
+    }
 }

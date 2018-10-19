@@ -13,4 +13,13 @@ class PlayersController extends Controller {
     public function __construct(PlayerRepository $playerRepository) {
         $this->playerRepository = $playerRepository;
     }
+
+    public function index(Request $request) {
+        if ($request->has('query')) {
+            $players = $this->playerRepository->searchPlayers($request);
+        } else {
+            $players = $this->playerRepository->getAllPlayers($request);
+        }
+        return PlayerResource::collection($players);
+    }
 }
