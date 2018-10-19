@@ -101,4 +101,8 @@ class User extends Authenticatable implements JWTSubject
     public function profile_photo() {
         return $this->belongsTo('App\Models\Photo', 'profile_photo_id', 'id');
     }
+
+    public function team() {
+        return $this->hasOne('App\Models\Team', 'user_id', 'id');
+    }
 }

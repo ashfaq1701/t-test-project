@@ -14,6 +14,10 @@ class CreateFkTransfersTable extends Migration
     public function up()
     {
         Schema::table('transfers', function (Blueprint $table) {
+            $table->foreign('player_id')
+                ->references('id')
+                ->on('players')
+                ->onDelete('cascade');
             $table->foreign('placed_from_id')
                 ->references('id')
                 ->on('teams')
@@ -33,6 +37,7 @@ class CreateFkTransfersTable extends Migration
     public function down()
     {
         Schema::table('transfers', function (Blueprint $table) {
+            $table->dropForeign('transferred_lists_player_id_foreign');
             $table->dropForeign('transferred_lists_placed_from_id_foreign');
             $table->dropForeign('transferred_lists_transferred_to_id_foreign');
         });

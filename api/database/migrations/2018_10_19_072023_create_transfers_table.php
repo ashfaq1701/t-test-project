@@ -16,9 +16,10 @@ class CreateTransfersTable extends Migration
         Schema::create('transfers', function (Blueprint $table) {
             $table->increments('id');
             $table->bigInteger('asking_price');
-            $table->integer('placed_from_id')->unsigned()->nullable()->index('transfer_lists_1_idx');
+            $table->integer('player_id')->unsigned()->nullable()->index('transfer_lists_1_idx');
+            $table->integer('placed_from_id')->unsigned()->nullable()->index('transfer_lists_2_idx');
             $table->dateTime('transfer_completed_at')->nullable();
-            $table->integer('transferred_to_id')->unsigned()->nullable()->index('transfer_lists_2_idx');
+            $table->integer('transferred_to_id')->unsigned()->nullable()->index('transfer_lists_3_idx');
             $table->tinyInteger('is_notified')->nullable();
             $table->timestamps();
         });
