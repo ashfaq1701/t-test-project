@@ -52,4 +52,28 @@ class PlayerRepository {
             return $query->get();
         }
     }
+
+    public function storePlayer($request) {
+        $data = $request->only(['first_name', 'last_name', 'age', 'price', 'country_id', 'team_id', 'player_role_id']);
+        $player = Player::create($data);
+        return $player;
+    }
+
+    public function updatePlayer($request, $id) {
+        $player = Player::find($id);
+        $data = $request->only(['first_name', 'last_name', 'age', 'price', 'country_id', 'team_id', 'player_role_id']);
+        $player->update($data);
+        return $player;
+    }
+
+    public function deletePlayer($id) {
+        $player = Player::find($id);
+        $player->delete();
+        return '';
+    }
+
+    public function getPlayer($id) {
+        $player = Player::find($id);
+        return $player;
+    }
 }

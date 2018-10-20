@@ -2,7 +2,11 @@
 
 namespace App\Repositories;
 
+use App\Models\Player;
 use App\Models\Transfer;
+use Carbon\Carbon;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Auth;
 
 class TransferRepository {
     public function searchTransfers($request) {
@@ -44,5 +48,60 @@ class TransferRepository {
         else {
             return $query->get();
         }
+    }
+
+    public function storeTransfer($request) {
+        $data = $request->only(['player_id', 'asking_price']);
+        $player = Player::find($data['player_id']);
+        if (!empty($player->team_id)) {
+            $data['placed_from_id'] = $player->team_id;
+        }
+        $transfer = Transfer::create($data);
+        return $transfer;
+    }
+
+    public function updateTransfer($request, $id) {
+        $currentUser = Auth::user();
+        $data = $request->only(['player_id', 'asking_price', 'is_notified']);
+        $transfer = Transfer::find($id);
+        if ($currentUser->hasPermission('accept_transfer_player')) {
+            if (!$request->has('is_notified')) {
+                $team = $currentUser->team;
+                if (empty($team)) {
+                    throw new ValidationException('You do not have any team to buy this player');
+                }
+                if ($team->fund < $transfer->asking_price) {
+                    throw new ValidationException('You do not have enough fund to buy this player');
+                }
+                $data['transferred_to_id'] = $team->id;
+
+                if (!empty($transfer->placedFrom)) {
+                    $transfer->placedFrom->fund = $transfer->placedFrom->fund + $transfer->asked_price;
+                    $transfer->placedFrom->save();
+                }
+
+                $team->fund = $team->fund - $transfer->asked_price;
+                $team->save();
+
+                $player = $transfer->player;
+                $player->team_id = $team->id;
+                $player->save();
+
+                $data['transfer_completed_at'] = Carbon::now()->format('Y-m-d H:i:s');
+            }
+        }
+        $transfer->update($data);
+        return $transfer;
+    }
+
+    public function deleteTransfer($id) {
+        $transfer = Transfer::find($id);
+        $transfer->delete();
+        return '';
+    }
+
+    public function getTransfer($id) {
+        $transfer = Transfer::find($id);
+        return $transfer;
     }
 }

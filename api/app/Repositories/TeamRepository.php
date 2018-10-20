@@ -3,6 +3,8 @@
 namespace App\Repositories;
 
 use App\Models\Team;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 
 class TeamRepository {
     public function getQuery($request) {
@@ -39,5 +41,33 @@ class TeamRepository {
         } else {
             return $query->get();
         }
+    }
+
+    public function storeTeam($request) {
+        $data = $request->only(['name', 'fund', 'country_id', 'user_id']);
+        $team = Team::create($data);
+        return $team;
+    }
+
+    public function updateTeam($request, $id) {
+        $currentUser = Auth::user();
+        if ((!$currentUser->hasPermission('change_team_ownership')) && $request->has('user_id')) {
+            throw new ValidationException('Current user is not permitted to change team ownership');
+        }
+        $data = $request->only(['name', 'fund', 'country_id', 'user_id']);
+        $team = Team::find($id);
+        $team->update($data);
+        return $team;
+    }
+
+    public function deleteTeam($id) {
+        $team = Team::find($id);
+        $team->delete();
+        return '';
+    }
+
+    public function getTeam($id) {
+        $team = Team::find($id);
+        return $team;
     }
 }
