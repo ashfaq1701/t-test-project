@@ -13,10 +13,14 @@ class BaseTestCase extends TestCase
         $roleSeeder = new \RoleSeeder();
         $permissionSeeder = new \PermissionSeeder();
         $userSeeder = new \UserSeeder();
+        $countrySeeder = new \CountrySeeder();
+        $playerRoleSeeder = new \PlayerRoleSeeder();
 
         $roleSeeder->run();
         $permissionSeeder->run();
         $userSeeder->run();
+        $countrySeeder->run();
+        $playerRoleSeeder->run();
     }
 
     public function getTokenForUser($user, $password) {
