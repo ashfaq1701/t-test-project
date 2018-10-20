@@ -4,7 +4,7 @@ namespace App\Repositories;
 
 use App\Models\Team;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\ValidationException;
+use Dotenv\Exception\ValidationException;
 
 class TeamRepository {
     public function getQuery($request) {

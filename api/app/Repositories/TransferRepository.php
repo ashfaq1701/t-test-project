@@ -5,11 +5,12 @@ namespace App\Repositories;
 use App\Models\Player;
 use App\Models\Transfer;
 use Carbon\Carbon;
-use Illuminate\Validation\ValidationException;
+use Dotenv\Exception\ValidationException;
 use Illuminate\Support\Facades\Auth;
 
 class TransferRepository {
     public function searchTransfers($request) {
+        $currentUser = Auth::user();
         $query = Transfer::query();
         if ($request->has('country')) {
             $query = $query->whereHas('player', function($innerQuery) use($request) {
@@ -41,6 +42,15 @@ class TransferRepository {
         if (!($request->has('type') && ($request->input('type') == 'include_completed'))) {
             $query = $query->whereNull('transfer_completed_at')
                 ->whereNull('transferred_to_id');
+        }
+        if ($request->has('not_notified') && (intval($request->input('not_notified')) == 1)) {
+            $query = $query->where(function($innerQuery) {
+                $innerQuery->whereNull('is_notified')
+                    ->orWhere('is_notified', '=', 0);
+            });
+            $query->whereHas('placedFrom.user', function($innerQuery) use($currentUser) {
+                $innerQuery->where('user_id', '=', $currentUser->id);
+            });
         }
         if ($request->has('page')) {
             return $query->paginate();
@@ -85,6 +95,7 @@ class TransferRepository {
 
                 $player = $transfer->player;
                 $player->team_id = $team->id;
+                $player->price = $transfer->asked_price + ($this->getIncreaseFactor() / 100) * $transfer->asked_price;
                 $player->save();
 
                 $data['transfer_completed_at'] = Carbon::now()->format('Y-m-d H:i:s');
@@ -103,5 +114,9 @@ class TransferRepository {
     public function getTransfer($id) {
         $transfer = Transfer::find($id);
         return $transfer;
+    }
+
+    public function getIncreaseFactor() {
+        return rand(10, 100);
     }
 }

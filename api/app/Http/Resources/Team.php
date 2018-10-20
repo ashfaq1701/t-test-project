@@ -20,7 +20,8 @@ class Team extends JsonResource
             'fund' => $this->fund,
             'country' => new Country($this->country),
             'user_id' => $this->user_id,
-            'players' => Player::collection($this->players)
+            'players' => Player::collection($this->players),
+            'team_value' => $this->players->sum('price')
         );
     }
 }
