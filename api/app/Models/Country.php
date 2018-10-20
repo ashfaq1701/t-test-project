@@ -13,4 +13,8 @@ class Country extends Model
     public function players() {
         return $this->hasMany('App\Models\Player', 'country_id', 'id');
     }
+
+    public static function getIds() {
+        return self::query()->where('id', '>', 0)->pluck('id')->toArray();
+    }
 }

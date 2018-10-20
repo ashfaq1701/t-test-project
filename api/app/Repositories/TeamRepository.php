@@ -61,7 +61,15 @@ class TeamRepository {
     }
 
     public function deleteTeam($id) {
-        $team = Team::find($id);
+        if (is_object($id)) {
+            $team = $id;
+        } else {
+            $team = Team::find($id);
+        }
+        $playerRepository = new PlayerRepository();
+        foreach ($team->players as $player) {
+            $playerRepository->deletePlayer($player);
+        }
         $team->delete();
         return '';
     }

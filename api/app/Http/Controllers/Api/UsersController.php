@@ -38,6 +38,7 @@ class UsersController extends Controller
             'email' => 'required|email|max:255|unique:users'
         ]);
         $user = $this->userRepository->storeUser($request);
+        $this->userRepository->generateTeamAndPlayers($user);
         return new UserResource($user);
     }
 

@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Models\PlayerRole;
 use App\User;
 use Illuminate\Support\Facades\Auth;
 use Dotenv\Exception\ValidationException;
@@ -74,6 +75,10 @@ class UserRepository {
                 'message' => 'Could not delete own user from this endpoint'
             ], 403);
         }
+        if (!empty($user->team)) {
+            $teamRepository = new TeamRepository();
+            $teamRepository->deleteTeam($user->team);
+        }
         $user->delete();
 
         return '';
@@ -81,5 +86,33 @@ class UserRepository {
 
     public function generatePassword() {
         return 'abcdefgh1';
+    }
+
+    public function generateTeamAndPlayers($user) {
+        $goalkeeper = PlayerRole::where('name', 'LIKE', 'Goalkeeper')->first();
+        $defender = PlayerRole::where('name', 'LIKE', 'Defender')->first();
+        $midfielder = PlayerRole::where('name', 'LIKE', 'Midfielder')->first();
+        $attacker = PlayerRole::where('name', 'LIKE', 'Attacker')->first();
+
+        $team = factory(\App\Models\Team::class)->create([
+            'user_id' => $user->id
+        ]);
+
+        factory(\App\Models\Player::class, 3)->create([
+            'team_id' => $team->id,
+            'player_role_id' => $goalkeeper->id
+        ]);
+        factory(\App\Models\Player::class, 6)->create([
+            'team_id' => $team->id,
+            'player_role_id' => $defender->id
+        ]);
+        factory(\App\Models\Player::class, 6)->create([
+            'team_id' => $team->id,
+            'player_role_id' => $midfielder->id
+        ]);
+        factory(\App\Models\Player::class, 5)->create([
+            'team_id' => $team->id,
+            'player_role_id' => $attacker->id
+        ]);
     }
 }

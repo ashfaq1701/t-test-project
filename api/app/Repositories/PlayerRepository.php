@@ -67,7 +67,12 @@ class PlayerRepository {
     }
 
     public function deletePlayer($id) {
-        $player = Player::find($id);
+        if (is_object($id)) {
+            $player = $id;
+        } else {
+            $player = Player::find($id);
+        }
+        $player->transfers()->delete();
         $player->delete();
         return '';
     }

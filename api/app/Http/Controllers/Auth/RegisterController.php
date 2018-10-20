@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Repositories\UserRepository;
 use App\User;
 use App\Http\Resources\User As UserResource;
 use Illuminate\Database\QueryException;
@@ -15,13 +16,16 @@ class RegisterController extends Controller
 {
     use RegistersUsers;
 
+    public $userRepository;
+
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(UserRepository $userRepository)
     {
+        $this->userRepository = $userRepository;
         $this->middleware('guest');
     }
 
@@ -78,6 +82,8 @@ class RegisterController extends Controller
             $ownerRole = Role::findByName('owner');
             $user->assignRole($ownerRole);
             $user->sendConfirmationEmail();
+
+            $this->userRepository->generateTeamAndPlayers($user);
 
             return new UserResource($user);
         } catch (QueryException $e) {

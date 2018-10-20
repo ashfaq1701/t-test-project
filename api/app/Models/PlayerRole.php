@@ -9,4 +9,8 @@ class PlayerRole extends Model
     public function players() {
         return $this->hasMany('App\Models\Player', 'player_role_id', 'id');
     }
+
+    public static function getIds() {
+        return self::query()->where('id', '>', 0)->pluck('id')->toArray();
+    }
 }
