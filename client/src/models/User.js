@@ -2,6 +2,7 @@ import {getUser} from '../api/auth'
 import Role from './Role'
 import Permission from './Permission'
 import Photo from './Photo'
+import Team from './Team'
 
 export default class User {
   static from (token) {
@@ -16,7 +17,7 @@ export default class User {
     }
   }
 
-  constructor ({ id, name, email, roles, profile_photo }) {
+  constructor ({ id, name, email, roles, profile_photo, team }) {
     this.id = id
     this.name = name
     this.email = email
@@ -26,7 +27,10 @@ export default class User {
     }
     this.roles = []
     this.permissions = []
-
+    this.team = null
+    if (team !== null) {
+      this.team = new Team(team)
+    }
     for (let i = 0; i < roles.length; i++) {
       let role = roles[i]
       let roleObj = new Role(role)

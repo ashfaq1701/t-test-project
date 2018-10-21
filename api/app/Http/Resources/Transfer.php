@@ -18,7 +18,7 @@ class Transfer extends JsonResource
             'id' => $this->id,
             'asking_price' => $this->asking_price,
             'player' => new Player($this->player),
-            'placed_from_id' => $this->placed_from_id,
+            'placed_from' => new Team($this->placedFrom),
             'transfer_completed_at' => $this->transfer_completed_at,
             'transferred_to' => new Team($this->transferredTo),
             'is_notified' => $this->is_notified
