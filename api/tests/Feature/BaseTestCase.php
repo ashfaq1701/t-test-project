@@ -40,6 +40,11 @@ class BaseTestCase extends TestCase
         return $ownerRole;
     }
 
+    public function getLeagueManagerRole() {
+        $leagueManagerRole = Role::query()->where('name', 'LIKE', 'league_manager')->first();
+        return $leagueManagerRole;
+    }
+
     public function getAdminRole() {
         $adminRole = Role::query()->where('name', 'LIKE', 'admin')->first();
         return $adminRole;

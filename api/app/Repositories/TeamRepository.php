@@ -46,13 +46,20 @@ class TeamRepository {
 
     public function storeTeam($request) {
         $data = $request->only(['name', 'fund', 'country_id', 'user_id']);
+        if ($request->has('user_id')) {
+            $user = User::find($request->input('user_id'));
+            if (!empty($user->team)) {
+                throw new ValidationException('Target user already has an assigned team. Can not assign ' .
+                    'new team to this user.');
+            }
+        }
         $team = Team::create($data);
         return $team;
     }
 
     public function updateTeam($request, $id) {
         $currentUser = Auth::user();
-        if ((!$currentUser->hasPermission('change_team_ownership')) && $request->has('user_id')) {
+        if ((!$currentUser->hasPermissionTo('change_team_ownership')) && $request->has('user_id')) {
             throw new ValidationException('Current user is not permitted to change team ownership');
         }
         if ($request->has('user_id')) {

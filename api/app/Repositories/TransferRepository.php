@@ -77,7 +77,7 @@ class TransferRepository {
         $currentUser = Auth::user();
         $data = $request->only(['player_id', 'asking_price', 'is_notified']);
         $transfer = Transfer::find($id);
-        if ($currentUser->hasPermission('accept_transfer_player')) {
+        if ($currentUser->hasPermissionTo('accept_transfer_player')) {
             if (!$request->has('is_notified')) {
                 $team = $currentUser->team;
                 if (empty($team)) {
