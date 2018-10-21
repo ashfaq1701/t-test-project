@@ -29,6 +29,9 @@ class AuthTest extends BaseTestCase
             "password_confirmation" => "abcdefgh1"
         ]);
         $response->assertStatus(201);
+        $user = User::where('email', 'LIKE', 'user.test@test.local')->first();
+        $this->assertNotNull($user->team);
+        $this->assertTrue($user->team->players->count() > 0);
     }
 
     /**

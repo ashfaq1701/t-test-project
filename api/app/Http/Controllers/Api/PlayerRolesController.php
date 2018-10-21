@@ -11,6 +11,8 @@ class PlayerRolesController extends Controller {
     public $playerRoleRepository;
 
     public function __construct(PlayerRoleRepository $playerRoleRepository) {
+        $this->middleware('permission:get_player_roles',
+            ['only' => ['index']]);
         $this->playerRoleRepository = $playerRoleRepository;
     }
 

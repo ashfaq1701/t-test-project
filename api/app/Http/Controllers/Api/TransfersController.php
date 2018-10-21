@@ -12,6 +12,8 @@ class TransfersController extends Controller {
     public $transferRepository;
 
     public function __construct(TransferRepository $transferRepository) {
+        $this->middleware('permission:get_transfers',
+            ['only' => ['index']]);
         $this->middleware('permission:transfer_own_player|create_new_transfer',
             ['only' => ['store']]);
         $this->middleware('permission:edit_transfers|accept_transfer_player',

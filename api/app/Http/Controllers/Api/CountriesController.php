@@ -11,6 +11,8 @@ class CountriesController extends Controller {
     public $countryRepository;
 
     public function __construct(CountryRepository $countryRepository) {
+        $this->middleware('permission:get_countries',
+            ['only' => ['index']]);
         $this->countryRepository = $countryRepository;
     }
 

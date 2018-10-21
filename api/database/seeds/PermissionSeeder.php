@@ -14,6 +14,12 @@ class PermissionSeeder extends Seeder
         $managePhotos = Permission::create(['name' => 'manage_photos']);
         $manageAllPhotos = Permission::create(['name' => 'manage_all_photos']);
 
+        $getCountries = Permission::create(['name' => 'get_countries']);
+        $getPlayerRoles = Permission::create(['name' => 'get_player_roles']);
+        $getPlayers = Permission::create(['name' => 'get_players']);
+        $getTeams = Permission::create(['name' => 'get_teams']);
+        $getTransfers = Permission::create(['name' => 'get_transfers']);
+
         $createNewPlayer = Permission::create(['name' => 'create_new_player']);
         $createNewTeam = Permission::create(['name' => 'create_new_team']);
         $editPlayers = Permission::create(['name' => 'edit_players']);
@@ -32,12 +38,14 @@ class PermissionSeeder extends Seeder
         $admin = Role::findByName('admin');
         $admin->givePermissionTo([$manageRoles, $manageUsers, $managePhotos, $manageAllPhotos, $manageProfile,
             $createNewPlayer, $createNewTeam, $editPlayers, $editTeams, $deletePlayers, $deleteTeams,
-            $changeTeamOwnership, $createNewTransfer, $editTransfers, $deleteTransfers]);
+            $changeTeamOwnership, $createNewTransfer, $editTransfers, $deleteTransfers, $getCountries, $getPlayerRoles,
+            $getPlayers, $getTeams, $getTransfers]);
 
         $leagueManager = Role::findByName('league_manager');
-        $leagueManager->givePermissionTo([$manageProfile, $managePhotos, $editTeams, $modifyPlayerRole]);
+        $leagueManager->givePermissionTo([$manageProfile, $managePhotos, $editTeams, $modifyPlayerRole, $getCountries,
+            $getPlayerRoles, $getPlayers, $getTeams, $getTransfers]);
         $owner = Role::findByName('owner');
         $owner->givePermissionTo([$manageProfile, $managePhotos, $transferOwnPlayer, $acceptTransferPlayer,
-            $maintainOwnTeam]);
+            $maintainOwnTeam, $getCountries, $getPlayerRoles, $getPlayers, $getTeams, $getTransfers]);
     }
 }

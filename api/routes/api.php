@@ -35,4 +35,9 @@ Route::group(['middleware' => ['auth:api', 'is-active']], function () {
     Route::resource('users', 'Api\UsersController', ['except' => ['create', 'edit']]);
     Route::resource('roles', 'Api\RolesController', ['only' => ['index']]);
     Route::resource('photos', 'Api\PhotosController', ['except' => ['create', 'edit']]);
+    Route::resource('countries', 'Api\CountriesController', ['only' => ['index']]);
+    Route::resource('player-roles', 'Api\PlayerRolesController', ['only' => ['index']]);
+    Route::resource('players', 'Api\PlayersController', ['except' => ['create', 'edit']]);
+    Route::resource('teams', 'Api\TeamsController', ['except' => ['create', 'edit']]);
+    Route::resource('transfers', 'Api\TransfersController', ['except' => ['create', 'edit']]);
 });
