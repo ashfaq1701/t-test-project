@@ -39,7 +39,7 @@ class PlayersController extends Controller {
             'age' => 'required|numeric',
             'price' => 'required|numeric|min:1',
             'country_id' => 'required|exists:countries,id',
-            'team_id' => 'required|exists:teams,id',
+            'team_id' => 'sometimes|required|exists:teams,id',
             'player_role_id' => 'required|exists:player_roles,id'
         ]);
         $player = $this->playerRepository->storePlayer($request);

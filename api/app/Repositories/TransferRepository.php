@@ -42,16 +42,21 @@ class TransferRepository {
         if ($request->has('max_price')) {
             $query = $query->where('asking_price', '<=', $request->input('max_price'));
         }
-        if (!($request->has('type') && ($request->input('type') == 'include_completed'))) {
-            $query = $query->whereNull('transfer_completed_at')
-                ->whereNull('transferred_to_id');
+        if ($request->has('type')) {
+            if ($request->input('type') == 'completed') {
+                $query = $query->whereNotNull('transfer_completed_at')
+                    ->whereNotNull('transferred_to_id');
+            } else if ($request->input('type') == 'incomplete') {
+                $query = $query->whereNull('transfer_completed_at')
+                    ->whereNull('transferred_to_id');
+            }
         }
         if ($request->has('not_notified') && (intval($request->input('not_notified')) == 1)) {
             $query = $query->where(function($innerQuery) {
                 $innerQuery->whereNull('is_notified')
                     ->orWhere('is_notified', '=', 0);
             });
-            $query->whereHas('placedFrom.user', function($innerQuery) use($currentUser) {
+            $query->whereHas('placedFrom', function($innerQuery) use($currentUser) {
                 $innerQuery->where('user_id', '=', $currentUser->id);
             });
         }
@@ -89,16 +94,16 @@ class TransferRepository {
                 $data['transferred_to_id'] = $team->id;
 
                 if (!empty($transfer->placedFrom)) {
-                    $transfer->placedFrom->fund = $transfer->placedFrom->fund + $transfer->asked_price;
+                    $transfer->placedFrom->fund = $transfer->placedFrom->fund + $transfer->asking_price;
                     $transfer->placedFrom->save();
                 }
 
-                $team->fund = $team->fund - $transfer->asked_price;
+                $team->fund = $team->fund - $transfer->asking_price;
                 $team->save();
 
                 $player = $transfer->player;
                 $player->team_id = $team->id;
-                $player->price = $transfer->asked_price + ($this->getIncreaseFactor() / 100) * $transfer->asked_price;
+                $player->price = $transfer->asking_price + ($this->getIncreaseFactor() / 100) * $transfer->asking_price;
                 $player->save();
 
                 $data['transfer_completed_at'] = Carbon::now()->format('Y-m-d H:i:s');

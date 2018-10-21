@@ -7,6 +7,7 @@ use App\User;
 use Illuminate\Support\Facades\Auth;
 use Dotenv\Exception\ValidationException;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
 
 class UserRepository {
     public function __construct()
@@ -27,6 +28,12 @@ class UserRepository {
         $user = User::create($req);
         $roleIds = $request->input('roles');
         $user->roles()->sync($roleIds);
+        foreach ($roleIds as $roleId) {
+            $role = Role::find($roleId);
+            if ($role->name == 'owner') {
+                $this->generateTeamAndPlayers($user);
+            }
+        }
         return $user;
     }
 
