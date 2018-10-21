@@ -33,7 +33,7 @@ class TeamsController extends Controller {
     {
         $request->validate([
             'name' => 'required',
-            'fund' => 'required|numeric',
+            'fund' => 'required|numeric|min:1',
             'country_id' => 'required|exists:countries,id',
             'user_id' => 'sometimes|required|exists:users,id'
         ]);
@@ -51,7 +51,7 @@ class TeamsController extends Controller {
     {
         $request->validate([
             'name' => 'sometimes|required',
-            'fund' => 'sometimes|required|numeric',
+            'fund' => 'sometimes|required|numeric|min:1',
             'country_id' => 'sometimes|required|exists:countries,id',
             'user_id' => 'sometimes|required|exists:users,id'
         ]);

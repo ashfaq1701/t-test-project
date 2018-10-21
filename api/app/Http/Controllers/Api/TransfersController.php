@@ -30,7 +30,7 @@ class TransfersController extends Controller {
     {
         $request->validate([
             'player_id' => 'required|exists:players,id',
-            'asking_price' => 'required|numeric'
+            'asking_price' => 'required|numeric|min:1'
         ]);
         $transfer = $this->transferRepository->storeTransfer($request);
         return new TransferResource($transfer);
@@ -46,7 +46,7 @@ class TransfersController extends Controller {
     {
         $request->validate([
             'player_id' => 'sometimes|required|exists:players,id',
-            'asking_price' => 'sometimes|required|numeric'
+            'asking_price' => 'sometimes|required|numeric|min:1'
         ]);
         $transfer = $this->transferRepository->updateTransfer($request, $id);
         return new TransferResource($transfer);

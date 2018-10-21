@@ -35,7 +35,7 @@ class PlayersController extends Controller {
             'first_name' => 'required',
             'last_name' => 'required',
             'age' => 'required|numeric',
-            'price' => 'required|numeric',
+            'price' => 'required|numeric|min:1',
             'country_id' => 'required|exists:countries,id',
             'team_id' => 'required|exists:teams,id',
             'player_role_id' => 'required|exists:player_roles,id'
@@ -56,7 +56,7 @@ class PlayersController extends Controller {
             'first_name' => 'sometimes|required',
             'last_name' => 'sometimes|required',
             'age' => 'sometimes|required|numeric',
-            'price' => 'sometimes|required|numeric',
+            'price' => 'sometimes|required|numeric|min:1',
             'country_id' => 'sometimes|required|exists:countries,id',
             'team_id' => 'sometimes|required|exists:teams,id',
             'player_role_id' => 'sometimes|required|exists:player_roles,id'
