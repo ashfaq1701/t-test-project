@@ -33,8 +33,11 @@ class PlayerRepository {
     public function searchPlayers($request) {
         $query = $this->getQuery($request);
         $query = $query->where(function($innerQuery) use ($request) {
-           $innerQuery->where('first_name', 'LIKE', $request->input('query') . '%')
-               ->orWhere('last_name', 'LIKE', $request->input('query') . '%');
+            $nameParts = explode(' ', $request->input('query'));
+            $innerQuery->where('first_name', 'LIKE', $nameParts[0] . '%');
+            if (count($nameParts) > 1) {
+                $innerQuery->orWhere('last_name', 'LIKE', $nameParts[1] . '%');
+            }
         });
         if ($request->has('page')) {
             $players = $query->paginate();

@@ -29,8 +29,11 @@ class TransferRepository {
         }
         if ($request->has('player_name')) {
             $query = $query->whereHas('player', function($innerQuery) use($request) {
-               $innerQuery->where('first_name', 'LIKE', $request->input('player_name') . '%')
-                   ->orWhere('last_name', 'LIKE', $request->input('player_name') . '%');
+                $nameParts = explode(' ', $request->input('player_name'));
+                $innerQuery->where('first_name', 'LIKE', $nameParts[0] . '%');
+                if (count($nameParts) > 1) {
+                    $innerQuery->orWhere('last_name', 'LIKE', $nameParts[1] . '%');
+                }
             });
         }
         if ($request->has('min_price')) {

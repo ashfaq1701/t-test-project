@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Team;
+use App\User;
 use Illuminate\Support\Facades\Auth;
 use Dotenv\Exception\ValidationException;
 
@@ -53,6 +54,13 @@ class TeamRepository {
         $currentUser = Auth::user();
         if ((!$currentUser->hasPermission('change_team_ownership')) && $request->has('user_id')) {
             throw new ValidationException('Current user is not permitted to change team ownership');
+        }
+        if ($request->has('user_id')) {
+            $user = User::find($request->input('user_id'));
+            if (!empty($user->team)) {
+                throw new ValidationException('Target user already has an assigned team. Can not assign ' .
+                    'new team to this user.');
+            }
         }
         $data = $request->only(['name', 'fund', 'country_id', 'user_id']);
         $team = Team::find($id);
