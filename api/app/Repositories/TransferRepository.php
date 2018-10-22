@@ -69,8 +69,19 @@ class TransferRepository {
     }
 
     public function storeTransfer($request) {
+        $currentUser = Auth::user();
         $data = $request->only(['player_id', 'asking_price']);
         $player = Player::find($data['player_id']);
+        if ($currentUser->hasPermissionTo('transfer_own_player') && $currentUser->hasRole('owner')) {
+            if (empty($currentUser->team)) {
+                throw new ValidationException('You do not have any team and you can not transfer player ' .
+                    'owned by others.');
+            }
+            if ($player->team_id !== $currentUser->team->id) {
+                throw new ValidationException('You can not transfer this player because he ' .
+                    'is not owned by you.');
+            }
+        }
         if (!empty($player->team_id)) {
             $data['placed_from_id'] = $player->team_id;
         }
