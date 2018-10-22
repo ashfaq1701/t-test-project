@@ -79,6 +79,70 @@ const routerOptions = [
     meta: {requiresAuth: true}
   },
   {
+    path: '/players',
+    name: 'ListPlayers',
+    component: 'players/ListPlayers',
+    meta: {requiresAuth: true}
+  },
+  {
+    path: '/players/add',
+    name: 'AddPlayer',
+    component: 'players/AddPlayer',
+    meta: {requiresAuth: true}
+  },
+  {
+    path: '/players/:id/edit',
+    name: 'EditPlayer',
+    component: 'players/EditPlayer',
+    meta: {requiresAuth: true},
+    props: true
+  },
+  {
+    path: '/teams',
+    name: 'ListTeams',
+    component: 'teams/ListTeams',
+    meta: {requiresAuth: true}
+  },
+  {
+    path: '/teams/add',
+    name: 'AddTeam',
+    component: 'teams/AddTeam',
+    meta: {requiresAuth: true}
+  },
+  {
+    path: '/teams/:id/edit',
+    name: 'EditTeam',
+    component: 'teams/EditTeam',
+    meta: {requiresAuth: true},
+    props: true
+  },
+  {
+    path: '/teams/:id/view',
+    name: 'ViewTeam',
+    component: 'teams/ViewTeam',
+    meta: {requiresAuth: true},
+    props: true
+  },
+  {
+    path: '/transfers',
+    name: 'ListTransfers',
+    component: 'transfers/ListTransfers',
+    meta: {requiresAuth: true}
+  },
+  {
+    path: '/transfers/add',
+    name: 'AddTransfer',
+    component: 'transfers/AddTransfer',
+    meta: {requiresAuth: true}
+  },
+  {
+    path: '/transfers/:id/edit',
+    name: 'EditTransfer',
+    component: 'transfers/EditTransfer',
+    meta: {requiresAuth: true},
+    props: true
+  },
+  {
     path: '*',
     name: 'NotFound',
     component: 'NotFound'
