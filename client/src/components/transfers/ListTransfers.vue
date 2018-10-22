@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-layout row justify-center>
-      <h2>List Transfers</h2>
+      <h2>Transfer List</h2>
     </v-layout>
   </v-container>
 </template>

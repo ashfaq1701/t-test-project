@@ -63,7 +63,8 @@
       menuItems () {
         if (this.isAuthenticated) {
           return [
-            { title: 'Home', path: '/home', icon: 'home' }
+            { title: 'Home', path: '/home', icon: 'home' },
+            { title: 'Transfer List', path: '/transfers', icon: 'swap_horiz' }
           ]
         } else {
           return [
