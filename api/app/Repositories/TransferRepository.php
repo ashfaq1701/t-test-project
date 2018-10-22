@@ -77,7 +77,7 @@ class TransferRepository {
                 throw new ValidationException('You do not have any team and you can not transfer player ' .
                     'owned by others.');
             }
-            if ($player->team_id !== $currentUser->team->id) {
+            if ($player->team_id != $currentUser->team->id) {
                 throw new ValidationException('You can not transfer this player because he ' .
                     'is not owned by you.');
             }
