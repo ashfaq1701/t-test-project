@@ -8,6 +8,7 @@
     </v-toolbar-title>
     <v-spacer></v-spacer>
     <v-toolbar-items class="hidden-xs-only">
+      <v-btn flat v-if="hasOwnTeam">${{ formatMoney(user.team.fund) }}</v-btn>
       <v-btn
         flat
         v-for="item in menuItems"
@@ -49,6 +50,7 @@
 <script>
   import Vue from 'vue'
   import {logout} from '../../api/auth'
+  import {globals} from '../mixins/globals'
 
   export default Vue.component('topbar', {
     data () {
@@ -78,6 +80,13 @@
       },
       user () {
         return this.$store.getters.currentUser
+      },
+      hasOwnTeam () {
+        if (this.user !== null && typeof this.user !== 'undefined' &&
+          this.user.hasPermission('maintain_own_team') && this.user.team !== null) {
+          return true
+        }
+        return false
       },
       hasSidebar () {
         return this.user !== null && (this.user.hasRole('admin') || this.user.hasRole('league_manager'))
@@ -119,7 +128,10 @@
       clicked: function (route) {
         this.$router.push(route)
       }
-    }
+    },
+    mixins: [
+      globals
+    ]
   })
 </script>
 

@@ -1,35 +1,29 @@
 <template>
   <v-container>
-    <v-layout row justify-center>
-      <h2>Team Name: {{ team.name }}</h2>
-    </v-layout>
-    <v-layout row justify-center>
-      <h3>Team Value: ${{ formatMoney(team.team_value) }}</h3>
-    </v-layout>
+    <view_team_detail :team="team" v-if="team !== null"></view_team_detail>
   </v-container>
 </template>
 
 <script>
-
   import Vue from 'vue'
-  import ListTeamPlayers from '../players/ListTeamPlayers'
-  import {globals} from '../mixins/globals'
-
+  import ViewTeamDetail from './ViewTeamDetail'
+  import {getTeam} from '../../api/teams'
+  import Team from '../../models/Team'
   export default Vue.component('view_team', {
-    props: ['team'],
+    props: ['id'],
     data () {
-      return {}
-    },
-    computed: {
-      error () {
-        return this.$store.state.error
+      return {
+        team: null
       }
     },
-    components: {
-      ListTeamPlayers
+    created: function () {
+      let self = this
+      getTeam(this.id).then(function (response) {
+        self.team = new Team(response.data.data)
+      })
     },
-    mixins: [
-      globals
-    ]
+    components: {
+      ViewTeamDetail
+    }
   })
 </script>

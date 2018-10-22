@@ -12,7 +12,7 @@ class TeamsController extends Controller {
 
     public function __construct(TeamRepository $teamRepository) {
         $this->middleware('permission:get_teams',
-            ['only' => ['index']]);
+            ['only' => ['index', 'show']]);
         $this->middleware('permission:create_new_team',
             ['only' => ['store']]);
         $this->middleware('permission:edit_teams|change_team_ownership',

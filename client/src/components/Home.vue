@@ -4,14 +4,14 @@
       v-if="currentUser !== null &&
       typeof currentUser !== 'undefined' &&
       currentUser.hasPermission('maintain_own_team')">
-      <view_team :team="team" v-if="hasTeam"></view_team>
+      <view_team_detail :team="team" v-if="hasTeam"></view_team_detail>
       <no_team v-else></no_team>
     </v-container>
   </v-container>
 </template>
 
 <script>
-  import ViewTeam from './teams/ViewTeam'
+  import ViewTeamDetail from './teams/ViewTeamDetail'
   import NoTeam from './teams/NoTeam'
   export default {
     data () {
@@ -32,7 +32,7 @@
       }
     },
     components: {
-      ViewTeam,
+      ViewTeamDetail,
       NoTeam
     }
   }

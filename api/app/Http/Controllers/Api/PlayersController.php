@@ -12,7 +12,7 @@ class PlayersController extends Controller {
 
     public function __construct(PlayerRepository $playerRepository) {
         $this->middleware('permission:get_players',
-            ['only' => ['index']]);
+            ['only' => ['index', 'show']]);
         $this->middleware('permission:create_new_player',
             ['only' => ['store']]);
         $this->middleware('permission:edit_players|modify_player_role',
