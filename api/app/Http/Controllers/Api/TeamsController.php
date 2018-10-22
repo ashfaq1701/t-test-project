@@ -23,7 +23,7 @@ class TeamsController extends Controller {
     }
 
     public function index(Request $request) {
-        if ($request->has('query')) {
+        if ($request->has('query') && !empty($request->input('query'))) {
             $teams = $this->teamRepository->searchTeams($request);
         } else {
             $teams = $this->teamRepository->getAllTeams($request);

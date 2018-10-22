@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container fluid>
     <view_team_detail :team="team" v-if="team !== null"></view_team_detail>
   </v-container>
 </template>

@@ -10,13 +10,13 @@ use Dotenv\Exception\ValidationException;
 class TeamRepository {
     public function getQuery($request) {
         $query = Team::query();
-        if ($request->has('country')) {
+        if ($request->has('country') && !empty($request->input('country'))) {
             $query = $query->where('country_id', '=', $request->input('country'));
         }
-        if ($request->has('user')) {
+        if ($request->has('user') && !empty($request->input('user'))) {
             $query = $query->where('user_id', '=', $request->input('user'));
         }
-        if ($request->has('user_name')) {
+        if ($request->has('user_name') && !empty($request->input('user_name'))) {
             $query = $query->whereHas('user', function ($innerQuery) use($request) {
                $innerQuery->where('name', 'LIKE', $request->input('user_name') . '%');
             });
@@ -28,7 +28,7 @@ class TeamRepository {
         $query = $this->getQuery($request);
         $query = $query->where('name', 'LIKE', $request->input('query') . '%');
         if ($request->has('page')) {
-            $teams = $query->paginate();
+            $teams = $query->paginate(10);
         } else {
             $teams = $query->get();
         }
@@ -38,7 +38,7 @@ class TeamRepository {
     public function getAllTeams($request) {
         $query = $this->getQuery($request);
         if ($request->has('page')) {
-            return $query->paginate();
+            return $query->paginate(10);
         } else {
             return $query->get();
         }

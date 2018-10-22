@@ -23,7 +23,7 @@ class PlayersController extends Controller {
     }
 
     public function index(Request $request) {
-        if ($request->has('query')) {
+        if ($request->has('query') && !empty($request->input('query'))) {
             $players = $this->playerRepository->searchPlayers($request);
         } else {
             $players = $this->playerRepository->getAllPlayers($request);

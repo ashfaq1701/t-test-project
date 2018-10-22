@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container fluid>
     <v-layout row justify-center>
       <h2>Team Name: {{ team.name }}</h2>
     </v-layout>
@@ -13,9 +13,9 @@
     <v-layout row justify-center v-if="hasUserAccess && user !== null">
       <h3>Owner: <a v-on:click="$router.push('/users/' + user.id + '/edit')">{{ user.name }}</a></h3>
     </v-layout>
+    <list_team_players :team="team" v-if="team !== null"></list_team_players>
   </v-container>
 </template>
-
 <script>
 
   import Vue from 'vue'

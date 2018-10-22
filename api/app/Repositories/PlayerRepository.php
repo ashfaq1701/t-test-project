@@ -7,24 +7,24 @@ use App\Models\Player;
 class PlayerRepository {
     public function getQuery($request) {
         $query = Player::query();
-        if ($request->has('team')) {
+        if ($request->has('team') && !empty($request->input('team'))) {
             $query = $query->where('team_id', '=', $request->input('team'));
         }
-        if ($request->has('team_name')) {
+        if ($request->has('team_name') && !empty($request->input('team_name'))) {
             $query = $query->whereHas('team', function($innerQuery) use($request) {
                $innerQuery->where('name', 'LIKE', $request->input('team_name') . '%');
             });
         }
-        if ($request->has('country')) {
+        if ($request->has('country') && !empty($request->input('country'))) {
             $query = $query->where('country_id', '=', $request->input('country'));
         }
-        if ($request->has('player_type')) {
-            $query = $query->where('player_type_id', '=', $request->input('player_type'));
+        if ($request->has('player_role') && !empty($request->input('player_role'))) {
+            $query = $query->where('player_role_id', '=', $request->input('player_role'));
         }
-        if ($request->has('min_price')) {
+        if ($request->has('min_price') && !empty($request->input('min_price'))) {
             $query = $query->where('price','>=', $request->input('min_price'));
         }
-        if ($request->has('max_price')) {
+        if ($request->has('max_price') && !empty($request->input('max_price'))) {
             $query = $query->where('price', '<=', $request->input('max_price'));
         }
         return $query;
@@ -40,7 +40,7 @@ class PlayerRepository {
             }
         });
         if ($request->has('page')) {
-            $players = $query->paginate();
+            $players = $query->paginate(10);
         } else {
             $players = $query->get();
         }
@@ -50,7 +50,7 @@ class PlayerRepository {
     public function getAllPlayers($request) {
         $query = $this->getQuery($request);
         if ($request->has('page')) {
-            return $query->paginate();
+            return $query->paginate(10);
         } else {
             return $query->get();
         }

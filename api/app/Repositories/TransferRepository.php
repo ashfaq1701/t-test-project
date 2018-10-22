@@ -12,22 +12,22 @@ class TransferRepository {
     public function searchTransfers($request) {
         $currentUser = Auth::user();
         $query = Transfer::query();
-        if ($request->has('country')) {
+        if ($request->has('country') && !empty($request->input('country'))) {
             $query = $query->whereHas('player', function($innerQuery) use($request) {
                 $innerQuery->where('country_id', '=', $request->input('country'));
             });
         }
-        if ($request->has('team')) {
+        if ($request->has('team') && !empty($request->input('team'))) {
             $query = $query->whereHas('player', function ($innerQuery) use($request) {
                $innerQuery->where('team_id', '=', $request->input('team'));
             });
         }
-        if ($request->has('team_name')) {
+        if ($request->has('team_name') && !empty($request->input('team_name'))) {
             $query = $query->whereHas('player.team', function ($innerQuery) use($request) {
                 $innerQuery->where('name', 'LIKE', $request->input('team_name') . '%');
             });
         }
-        if ($request->has('player_name')) {
+        if ($request->has('player_name') && !empty($request->input('player_name'))) {
             $query = $query->whereHas('player', function($innerQuery) use($request) {
                 $nameParts = explode(' ', $request->input('player_name'));
                 $innerQuery->where('first_name', 'LIKE', $nameParts[0] . '%');
@@ -36,13 +36,18 @@ class TransferRepository {
                 }
             });
         }
-        if ($request->has('min_price')) {
+        if ($request->has('player_role') && !empty($request->input('player_role'))) {
+            $query = $query->whereHas('player', function($innerQuery) use($request) {
+                $innerQuery->where('player_role_id', '=', $request->input('player_role'));
+            });
+        }
+        if ($request->has('min_price') && !empty($request->input('min_price'))) {
             $query = $query->where('asking_price', '>=', $request->input('min_price'));
         }
-        if ($request->has('max_price')) {
+        if ($request->has('max_price') && !empty($request->input('max_price'))) {
             $query = $query->where('asking_price', '<=', $request->input('max_price'));
         }
-        if ($request->has('type')) {
+        if ($request->has('type') && !empty($request->input('type'))) {
             if ($request->input('type') == 'completed') {
                 $query = $query->whereNotNull('transfer_completed_at')
                     ->whereNotNull('transferred_to_id');
@@ -61,7 +66,7 @@ class TransferRepository {
             });
         }
         if ($request->has('page')) {
-            return $query->paginate();
+            return $query->paginate(10);
         }
         else {
             return $query->get();
