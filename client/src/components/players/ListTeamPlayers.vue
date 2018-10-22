@@ -23,6 +23,7 @@
           v-model="country"
           :items="countries"
           :loading="countryIsLoading"
+          no-filter
           :search-input.sync="searchCountries"
           item-text="name"
           item-value="id"
