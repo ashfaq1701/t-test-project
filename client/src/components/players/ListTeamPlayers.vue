@@ -61,6 +61,8 @@
     <v-divider></v-divider>
     <v-spacer></v-spacer>
     <view_player ref="viewPlayer"></view_player>
+    <player_form ref="playerForm"></player_form>
+    <v-btn color="info" class="right" v-on:click="addPlayer(team)">Add Player</v-btn>
     <v-data-table
       :headers="headers"
       :items="players"
@@ -82,6 +84,13 @@
           <v-btn fab dark small color="primary" v-on:click="viewPlayer(props.item)">
             <v-icon dark>view_headline</v-icon>
           </v-btn>
+          <v-btn
+            fab dark small color="primary"
+            v-on:click="editPlayer(props.item, team)"
+            v-if="currentUser !== null && typeof currentUser !== 'undefined' && currentUser.hasPermission('edit_players')"
+          >
+            <v-icon dark>edit</v-icon>
+          </v-btn>
         </td>
       </template>
     </v-data-table>
@@ -102,6 +111,7 @@
   import Player from '../../models/Player'
   import {globals} from '../mixins/globals'
   import ViewPlayer from './ViewPlayer'
+  import PlayerForm from './PlayerForm'
 
   export default Vue.component('list_team_players', {
     props: ['team'],
@@ -145,6 +155,12 @@
           self.totalPage = response.data.meta.last_page
           self.$store.commit('setLoading', false)
         })
+      },
+      addPlayer: function (team) {
+        this.$refs.playerForm.open(null, team)
+      },
+      editPlayer: function (player, team) {
+        this.$refs.playerForm.open(player, team)
       },
       search: function () {
         let self = this
@@ -208,6 +224,9 @@
       },
       loading () {
         return this.$store.state.loading
+      },
+      currentUser () {
+        return this.$store.getters.currentUser
       }
     },
     watch: {
@@ -245,7 +264,8 @@
       globals
     ],
     components: {
-      ViewPlayer
+      ViewPlayer,
+      PlayerForm
     }
   })
 </script>

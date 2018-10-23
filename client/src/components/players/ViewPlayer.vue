@@ -68,6 +68,8 @@
           getTeam(player.team_id).then(function (response) {
             self.team = response.data.data
           })
+        } else {
+          self.team = null
         }
         this.dialog = true
       },
