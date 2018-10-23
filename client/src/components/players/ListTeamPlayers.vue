@@ -62,7 +62,11 @@
     <v-spacer></v-spacer>
     <view_player ref="viewPlayer"></view_player>
     <player_form ref="playerForm"></player_form>
-    <v-btn color="info" class="right" v-on:click="addPlayer(team)">Add Player</v-btn>
+    <v-btn
+      color="info"
+      class="right"
+      v-if="currentUser !== null && typeof currentUser !== 'undefined' && currentUser.hasPermission('create_new_player')"
+      v-on:click="addPlayer(team)">Add Player</v-btn>
     <v-data-table
       :headers="headers"
       :items="players"
