@@ -106,15 +106,21 @@ class UserTest extends BaseTestCase
      */
     public function testAdminCanDeleteUser()
     {
-        $userUpd = factory(\App\User::class)->create();
-        $otherRole = $this->getOtherRoleThanAdmin();
-        $userUpd->assignRole($otherRole);
+        $this->json('POST', '/api/register', [
+            "email" => "user.test42@test.local",
+            "name" => "User Test 42",
+            "password" => "abcdefgh1",
+            "password_confirmation" => "abcdefgh1"
+        ]);
+        $userDelete = User::where('email', 'LIKE', 'user.test42@test.local')->first();
+        $userDelete->confirmation_token = null;
+        $userDelete->save();
 
         $user = factory(\App\User::class)->create();
         $adminRole = $this->getAdminRole();
         $user->assignRole($adminRole);
         $token = $this->getTokenForUser($user, "abcdefgh1");
-        $response = $this->json('DELETE', '/api/users/' . $userUpd->id, [], [
+        $response = $this->json('DELETE', '/api/users/' . $userDelete->id, [], [
             'Authentication' => 'Bearer ' . $token
         ]);
         $response->assertStatus(200);
