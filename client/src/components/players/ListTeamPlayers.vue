@@ -11,6 +11,18 @@
     <v-spacer></v-spacer>
     <v-layout row wrap>
       <v-flex xs12>
+        <v-alert type="error" dismissible v-model="alert">
+          {{ error }}
+        </v-alert>
+      </v-flex>
+      <v-flex xs12>
+        <v-alert type="success" dismissible v-model="success">
+          {{ message }}
+        </v-alert>
+      </v-flex>
+    </v-layout>
+    <v-layout row wrap>
+      <v-flex xs12>
         <h2>Filters</h2>
       </v-flex>
       <v-flex xs12>
@@ -61,7 +73,9 @@
     <v-divider></v-divider>
     <v-spacer></v-spacer>
     <view_player ref="viewPlayer"></view_player>
-    <player_form ref="playerForm"></player_form>
+    <player_form
+      ref="playerForm"
+      @playerUpdated="playerUpdated"></player_form>
     <v-btn
       color="info"
       class="right"
@@ -78,7 +92,10 @@
         <td>{{ props.item.first_name }}</td>
         <td>{{ props.item.last_name }}</td>
         <td>
-          <span v-if="props.item.country !== null">{{ props.item.country.alpha_2 }}</span>
+          <span
+            v-if="props.item.country !== null && typeof props.item.country !== 'undefined'">
+            {{ props.item.country.alpha_2 }}
+          </span>
         </td>
         <td>
           <span v-if="props.item.player_role !== null">{{ props.item.player_role.name }}</span>
@@ -121,6 +138,8 @@
     props: ['team'],
     data () {
       return {
+        alert: false,
+        success: false,
         name: null,
         countries: [],
         country: null,
@@ -163,6 +182,7 @@
         this.$refs.playerForm.open(null, team)
       },
       editPlayer: function (player, team) {
+        player = new Player(JSON.parse(JSON.stringify(player)))
         this.$refs.playerForm.open(player, team)
       },
       search: function () {
@@ -170,6 +190,13 @@
       },
       viewPlayer: function (player) {
         this.$refs.viewPlayer.open(player)
+      },
+      playerUpdated: function () {
+        this.alert = false
+        this.$store.commit('setMessage', 'Player updated successfully.')
+        let data = this.searchData
+        data.page = 1
+        this.searchPlayers(data)
       }
     },
     computed: {
@@ -230,6 +257,12 @@
         data.team = self.team.id
         data.page = 1
         return data
+      },
+      error () {
+        return this.$store.state.error
+      },
+      message () {
+        return this.$store.state.message
       }
     },
     watch: {
@@ -252,7 +285,7 @@
         let self = this
         searchCountries(value).then(function (response) {
           let data = response.data.data
-          if (self.country !== null) {
+          if (self.country !== null && typeof self.country !== 'undefined') {
             data = data.concat([self.country])
           }
           self.countries = data
@@ -261,6 +294,26 @@
         }).finally(function () {
           self.countryIsLoading = false
         })
+      },
+      error (value) {
+        if (value) {
+          this.alert = true
+        }
+      },
+      message (value) {
+        if (value) {
+          this.success = true
+        }
+      },
+      alert (value) {
+        if (!value) {
+          this.$store.commit('setError', null)
+        }
+      },
+      success (value) {
+        if (!value) {
+          this.$store.commit('setMessage', null)
+        }
       }
     },
     mixins: [
