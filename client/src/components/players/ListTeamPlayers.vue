@@ -8,6 +8,7 @@
       ></v-progress-circular>
     </div>
     <v-divider></v-divider>
+    <v-spacer></v-spacer>
     <v-layout row wrap>
       <v-flex xs12>
         <h2>Filters</h2>
@@ -58,6 +59,8 @@
       </v-flex>
     </v-layout>
     <v-divider></v-divider>
+    <v-spacer></v-spacer>
+    <view_player ref="viewPlayer"></view_player>
     <v-data-table
       :headers="headers"
       :items="players"
@@ -74,8 +77,11 @@
         <td>
           <span v-if="props.item.player_role !== null">{{ props.item.player_role.name }}</span>
         </td>
-        <td>{{ props.item.price }}</td>
+        <td>${{ formatMoney(props.item.price) }}</td>
         <td>
+          <v-btn fab dark small color="primary" v-on:click="viewPlayer(props.item)">
+            <v-icon dark>view_headline</v-icon>
+          </v-btn>
         </td>
       </template>
     </v-data-table>
@@ -94,6 +100,8 @@
   import {getPlayerRoles} from '../../api/playerRoles'
   import {searchPlayers} from '../../api/players'
   import Player from '../../models/Player'
+  import {globals} from '../mixins/globals'
+  import ViewPlayer from './ViewPlayer'
 
   export default Vue.component('list_team_players', {
     props: ['team'],
@@ -160,6 +168,9 @@
         data.page = 1
         self.searchData = data
         this.searchPlayers(data)
+      },
+      viewPlayer: function (player) {
+        this.$refs.viewPlayer.open(player)
       }
     },
     computed: {
@@ -229,6 +240,12 @@
           self.countryIsLoading = false
         })
       }
+    },
+    mixins: [
+      globals
+    ],
+    components: {
+      ViewPlayer
     }
   })
 </script>
