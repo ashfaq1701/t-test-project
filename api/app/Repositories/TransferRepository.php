@@ -31,6 +31,9 @@ class TransferRepository {
             $query = $query->whereHas('player', function($innerQuery) use($request) {
                 $nameParts = explode(' ', $request->input('player_name'));
                 $innerQuery->where('first_name', 'LIKE', $nameParts[0] . '%');
+                if (count($nameParts) == 1) {
+                    $innerQuery->orWhere('last_name', 'LIKE', $nameParts[0] . '%');
+                }
                 if (count($nameParts) > 1) {
                     $innerQuery->orWhere('last_name', 'LIKE', $nameParts[1] . '%');
                 }

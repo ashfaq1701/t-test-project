@@ -79,7 +79,7 @@
                   label="Player Role"
                   return-object></v-autocomplete>
               </v-flex>
-              <v-flex xs12 v-if="passedPlayer === null && team === null">
+              <v-flex xs12 v-if="passedPlayer === null && passedTeam === null">
                 <v-autocomplete
                   v-model="team"
                   :items="teams"
@@ -119,6 +119,7 @@
         valid: false,
         dialog: false,
         passedPlayer: null,
+        passedTeam: null,
         player: {
           id: '',
           first_name: '',
@@ -154,7 +155,7 @@
     },
     methods: {
       open: function (player, team) {
-        if (player === null) {
+        if (player === null || typeof player === 'undefined') {
           this.$refs.form.reset()
           this.player = this.emptyPlayer
         } else {
@@ -162,6 +163,7 @@
           this.countries.push(this.player.country)
         }
         this.passedPlayer = player
+        this.passedTeam = team
         this.team = team
         this.dialog = true
       },
@@ -198,6 +200,7 @@
         promise.then(function (response) {
           self.isLoading = false
           self.$emit('playerUpdated')
+          self.$refs.form.reset()
           self.dialog = false
         }).catch(function (error) {
           self.isLoading = false

@@ -2,7 +2,7 @@ import Country from './Country'
 import PlayerRole from './PlayerRole'
 
 export default class Player {
-  constructor ({id, first_name, last_name, age, price, country, player_role, team_id}) {
+  constructor ({id, first_name, last_name, age, price, country, player_role, team_id, team_name}) {
     this.id = id
     this.first_name = first_name
     this.last_name = last_name
@@ -17,5 +17,6 @@ export default class Player {
       this.player_role = new PlayerRole(player_role)
     }
     this.team_id = team_id
+    this.team_name = team_name
   }
 }

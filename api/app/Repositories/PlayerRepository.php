@@ -35,6 +35,9 @@ class PlayerRepository {
         $query = $query->where(function($innerQuery) use ($request) {
             $nameParts = explode(' ', $request->input('query'));
             $innerQuery->where('first_name', 'LIKE', $nameParts[0] . '%');
+            if (count($nameParts) == 1) {
+                $innerQuery->orWhere('last_name', 'LIKE', $nameParts[0] . '%');
+            }
             if (count($nameParts) > 1) {
                 $innerQuery->orWhere('last_name', 'LIKE', $nameParts[1] . '%');
             }

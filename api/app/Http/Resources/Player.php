@@ -14,7 +14,7 @@ class Player extends JsonResource
      */
     public function toArray($request)
     {
-        return array(
+        $data = array(
             'id' => $this->id,
             'first_name' => $this->first_name,
             'last_name' => $this->last_name,
@@ -22,7 +22,13 @@ class Player extends JsonResource
             'price' => $this->price,
             'country' => new Country($this->country),
             'player_role' => new PlayerRole($this->playerRole),
-            'team_id' => $this->team_id
+            'team_id' => $this->team_id,
+            'team_name' => null
         );
+        if (!empty($this->team))
+        {
+            $data['team_name'] = $this->team->name;
+        }
+        return $data;
     }
 }
