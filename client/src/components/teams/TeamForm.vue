@@ -21,8 +21,6 @@
 
 <script>
   import Vue from 'vue'
-  import {getUser} from '../../api/users'
-  import User from '../../models/User'
 
   export default Vue.component('team_form', {
     data () {
@@ -33,8 +31,7 @@
           id: '',
           name: '',
           fund: '',
-          country: null,
-          user: null
+          country: null
         },
         options: {
           color: 'primary',
@@ -46,14 +43,6 @@
       open: function (team) {
         this.team = team
         this.passedTeam = team
-        let self = this
-        if (team !== null && team.user_id !== null &&
-          this.currentUser !== null && typeof this.currentUser !== 'undefined' &&
-          this.currentUser.hasPermission('manage_users')) {
-          getUser(team.user_id).then(function (response) {
-            self.team.user = new User(response.data.data)
-          })
-        }
         this.dialog = true
       },
       save: function () {

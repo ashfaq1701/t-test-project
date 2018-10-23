@@ -21,8 +21,6 @@
 
 <script>
   import Vue from 'vue'
-  import {getTeam} from '../../api/teams'
-  import Team from '../../models/Team'
 
   export default Vue.component('player_form', {
     data () {
@@ -37,7 +35,6 @@
           price: '',
           country: null,
           player_role: null,
-          team: null,
           team_id: null
         },
         team: null,
@@ -52,18 +49,6 @@
         this.player = player
         this.passedPlayer = player
         this.team = team
-        let self = this
-        if (player !== null && team === null) {
-          if (player.team_id !== null) {
-            getTeam(player.team_id).then(function (response) {
-              self.player.team = new Team(response.data.data)
-            })
-          } else {
-            self.player.team = null
-          }
-        } else if (player !== null && team !== null) {
-          self.player.team = team
-        }
         this.dialog = true
       },
       save: function () {
