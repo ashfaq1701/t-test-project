@@ -87,6 +87,13 @@ class TransferRepository {
                     'is not owned by you.');
             }
         }
+        $activeTransferCount = Transfer::query()->where('player_id', '=', $player->id)
+            ->whereNull('transfer_completed_at')
+            ->whereNull('transferred_to_id')
+            ->count();
+        if ($activeTransferCount > 0) {
+            throw new ValidationException('This player is already in transfer list');
+        }
         if (!empty($player->team_id)) {
             $data['placed_from_id'] = $player->team_id;
         }

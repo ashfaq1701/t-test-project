@@ -126,6 +126,40 @@ class TransferTest extends BaseTestCase
         $response->assertStatus(201);
     }
 
+    public function testPlayerCannotBeTransferredTwice() {
+        $this->json('POST', '/api/register', [
+            "email" => "user.test41@test.local",
+            "name" => "User Test 41",
+            "password" => "abcdefgh1",
+            "password_confirmation" => "abcdefgh1"
+        ]);
+        $user = User::where('email', 'LIKE', 'user.test41@test.local')->first();
+        $user->confirmation_token = null;
+        $user->save();
+        $team = $user->team;
+        $player = $team->players[0];
+        $token1 = $this->getTokenForUser($user, "abcdefgh1");
+        $response = $this->json('POST', '/api/transfers', [
+            'player_id' => $player->id,
+            'asking_price' => 1500000
+        ], [
+            'Authentication' => 'Bearer ' . $token1
+        ]);
+        $response->assertStatus(201);
+        $this->json('GET', '/api/logout', [], [
+            'Authorization' => 'Bearer ' . $token1
+        ]);
+        $admin = User::where('email', 'LIKE', 'ashfaq.aws@gmail.com')->first();
+        $token2 = $this->getTokenForUser($admin, "abcdefgh1");
+        $response = $this->json('POST', '/api/transfers', [
+            'player_id' => $player->id,
+            'asking_price' => 1500000
+        ], [
+            'Authentication' => 'Bearer ' . $token2
+        ]);
+        $response->assertStatus(500);
+    }
+
     public function testUserCanAcceptTransfer() {
         $this->json('POST', '/api/register', [
             "email" => "user.test32@test.local",
