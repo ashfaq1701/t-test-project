@@ -114,6 +114,9 @@ class TransferRepository {
                 if ($team->fund < $transfer->asking_price) {
                     throw new ValidationException('You do not have enough fund to buy this player');
                 }
+                if ($transfer->placed_from_id == $team->id) {
+                    throw new ValidationException('This player is already in your team.');
+                }
                 $data['transferred_to_id'] = $team->id;
 
                 if (!empty($transfer->placedFrom)) {

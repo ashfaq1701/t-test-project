@@ -209,6 +209,33 @@ class TransferTest extends BaseTestCase
         $this->assertTrue($player->price > $playerPrice);
     }
 
+    public function testUserCannotBuyOwnPlayer() {
+        $this->json('POST', '/api/register', [
+            "email" => "user.test43@test.local",
+            "name" => "User Test 43",
+            "password" => "abcdefgh1",
+            "password_confirmation" => "abcdefgh1"
+        ]);
+        $user = User::where('email', 'LIKE', 'user.test43@test.local')->first();
+        $user->confirmation_token = null;
+        $user->save();
+        $team = $user->team;
+        $player = $team->players[0];
+        $token = $this->getTokenForUser($user, "abcdefgh1");
+        $response = $this->json('POST', '/api/transfers', [
+            'player_id' => $player->id,
+            'asking_price' => 1500000
+        ], [
+            'Authentication' => 'Bearer ' . $token
+        ]);
+        $data = json_decode($response->getContent(), true);
+        $transferArr = $data['data'];
+        $response2 = $this->json('PUT', '/api/transfers/' . $transferArr['id'], [], [
+            'Authentication' => 'Bearer ' . $token
+        ]);
+        $response2->assertStatus(500);
+    }
+
     public function testUserCanNotAcceptTransferWithInsufficientFund() {
         $this->json('POST', '/api/register', [
             "email" => "user.test34@test.local",
