@@ -76,6 +76,9 @@
     <player_form
       ref="playerForm"
       @playerUpdated="playerUpdated"></player_form>
+    <transfer_player
+      ref="transferPlayer"
+      @transferCreated="transferCreated"></transfer_player>
     <confirm ref="confirm"></confirm>
     <v-btn
       color="info"
@@ -99,7 +102,18 @@
           </span>
         </td>
         <td>
-          <span v-if="props.item.player_role !== null">{{ props.item.player_role.name }}</span>
+          <v-autocomplete
+            v-if="currentUser !== null && typeof currentUser !== 'undefined' &&
+            currentUser.hasPermission('modify_player_role') && props.item.player_role !== null"
+            v-model="props.item.player_role"
+            :items="playerRoles"
+            item-text="name"
+            item-value="id"
+            chips
+            label="Player Role"
+            @change="playerRoleUpdated(props.item, props.item.player_role)"
+            return-object></v-autocomplete>
+          <span v-else-if="props.item.player_role !== null">{{ props.item.player_role.name }}</span>
         </td>
         <td>${{ formatMoney(props.item.price) }}</td>
         <td>
@@ -112,6 +126,14 @@
             v-if="currentUser !== null && typeof currentUser !== 'undefined' && currentUser.hasPermission('edit_players')"
           >
             <v-icon dark>edit</v-icon>
+          </v-btn>
+          <v-btn
+            fab dark small color="primary"
+            v-on:click="transferPlayer(props.item)"
+            v-if="currentUser !== null && typeof currentUser !== 'undefined' &&
+            (currentUser.hasPermission('transfer_own_player') || currentUser.hasPermission('create_new_transfer'))"
+          >
+            <v-icon dark>swap_horiz</v-icon>
           </v-btn>
           <v-btn
             fab dark small color="red"
@@ -136,12 +158,13 @@
   import Vue from 'vue'
   import {searchCountries} from '../../api/countries'
   import {getPlayerRoles} from '../../api/playerRoles'
-  import {searchPlayers, deletePlayer} from '../../api/players'
+  import {searchPlayers, deletePlayer, editPlayer} from '../../api/players'
   import Player from '../../models/Player'
   import {globals} from '../mixins/globals'
   import ViewPlayer from './ViewPlayer'
   import PlayerForm from './PlayerForm'
   import Confirm from '../parts/Confirm'
+  import TransferPlayer from './TransferPlayer'
 
   export default Vue.component('list_team_players', {
     props: ['team'],
@@ -211,6 +234,9 @@
           }
         })
       },
+      transferPlayer: function (player) {
+        this.$refs.transferPlayer.open(player)
+      },
       search: function () {
         this.searchPlayers(this.searchData)
       },
@@ -223,6 +249,15 @@
         let data = this.searchData
         data.page = 1
         this.searchPlayers(data)
+      },
+      transferCreated: function () {
+        this.alert = false
+        this.$store.commit('setMessage', 'Player placed in transfer list.')
+      },
+      playerRoleUpdated: function (player, playerRole) {
+        editPlayer(player.id, {
+          player_role_id: playerRole.id
+        })
       }
     },
     computed: {
@@ -348,7 +383,8 @@
     components: {
       ViewPlayer,
       PlayerForm,
-      Confirm
+      Confirm,
+      TransferPlayer
     }
   })
 </script>
