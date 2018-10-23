@@ -133,7 +133,6 @@
         players: [],
         page: 1,
         totalPage: 1,
-        searchData: {},
         isLoading: false
       }
     },
@@ -142,7 +141,7 @@
       getPlayerRoles().then(function (response) {
         self.playerRoles = response.data.data
       })
-      this.searchPlayers({team: self.team.id, page: 1})
+      this.searchPlayers(this.searchData)
     },
     methods: {
       searchPlayers: function (params) {
@@ -167,27 +166,7 @@
         this.$refs.playerForm.open(player, team)
       },
       search: function () {
-        let self = this
-        let data = {}
-        if (self.country !== null && typeof self.country !== 'undefined') {
-          data.country = self.country.id
-        }
-        if (self.name !== null && typeof self.name !== 'undefined' && self.name !== '') {
-          data.query = self.name
-        }
-        if (self.playerRole !== null && typeof self.playerRole !== 'undefined') {
-          data.player_role = self.playerRole.id
-        }
-        if (self.min_price !== null && self.min_price !== 'undefined' && parseInt(self.min_price) !== 0) {
-          data.min_price = self.min_price
-        }
-        if (self.max_price !== null && self.max_price !== 'undefined' && parseInt(self.max_price) !== 0) {
-          data.max_price = self.max_price
-        }
-        data.team = self.team.id
-        data.page = 1
-        self.searchData = data
-        this.searchPlayers(data)
+        this.searchPlayers(this.searchData)
       },
       viewPlayer: function (player) {
         this.$refs.viewPlayer.open(player)
@@ -231,13 +210,33 @@
       },
       currentUser () {
         return this.$store.getters.currentUser
+      },
+      searchData () {
+        let self = this
+        let data = {}
+        if (self.country !== null && typeof self.country !== 'undefined') {
+          data.country = self.country.id
+        } else {
+          data.country = null
+        }
+        data.query = self.name
+        if (self.playerRole !== null && typeof self.playerRole !== 'undefined') {
+          data.player_role = self.playerRole.id
+        } else {
+          data.player_role = null
+        }
+        data.min_price = self.min_price
+        data.max_price = self.max_price
+        data.team = self.team.id
+        data.page = 1
+        return data
       }
     },
     watch: {
       page (val) {
-        this.searchData.page = val
-        this.searchData.team = this.team.id
-        this.searchPlayers(this.searchData)
+        let data = this.searchData
+        data.page = val
+        this.searchPlayers(data)
       },
       loading (value) {
         this.isLoading = value
