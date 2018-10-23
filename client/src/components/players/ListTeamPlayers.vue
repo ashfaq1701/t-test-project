@@ -76,6 +76,7 @@
     <player_form
       ref="playerForm"
       @playerUpdated="playerUpdated"></player_form>
+    <confirm ref="confirm"></confirm>
     <v-btn
       color="info"
       class="right"
@@ -112,6 +113,13 @@
           >
             <v-icon dark>edit</v-icon>
           </v-btn>
+          <v-btn
+            fab dark small color="red"
+            v-on:click="deletePlayer(props.item)"
+            v-if="currentUser !== null && typeof currentUser !== 'undefined' && currentUser.hasPermission('delete_players')"
+          >
+            <v-icon dark>remove</v-icon>
+          </v-btn>
         </td>
       </template>
     </v-data-table>
@@ -128,11 +136,12 @@
   import Vue from 'vue'
   import {searchCountries} from '../../api/countries'
   import {getPlayerRoles} from '../../api/playerRoles'
-  import {searchPlayers} from '../../api/players'
+  import {searchPlayers, deletePlayer} from '../../api/players'
   import Player from '../../models/Player'
   import {globals} from '../mixins/globals'
   import ViewPlayer from './ViewPlayer'
   import PlayerForm from './PlayerForm'
+  import Confirm from '../parts/Confirm'
 
   export default Vue.component('list_team_players', {
     props: ['team'],
@@ -184,6 +193,23 @@
       editPlayer: function (player, team) {
         player = new Player(JSON.parse(JSON.stringify(player)))
         this.$refs.playerForm.open(player, team)
+      },
+      deletePlayer: function (player) {
+        let self = this
+        self.$refs.confirm.open('Delete', 'Are you sure?', { color: 'red' }).then((confirm) => {
+          if (confirm === true) {
+            deletePlayer(player.id).then(function () {
+              self.alert = false
+              self.$store.commit('setMessage', 'Player deleted successfully.')
+              let data = self.searchData
+              data.page = 1
+              self.searchPlayers(data)
+            }).catch(function (error) {
+              self.success = false
+              self.$store.commit('setError', error.response.data.message)
+            })
+          }
+        })
       },
       search: function () {
         this.searchPlayers(this.searchData)
@@ -321,7 +347,8 @@
     ],
     components: {
       ViewPlayer,
-      PlayerForm
+      PlayerForm,
+      Confirm
     }
   })
 </script>
