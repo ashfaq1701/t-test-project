@@ -37,8 +37,8 @@ export function deleteOwnUser () {
   return axios.get('profile/delete-user')
 }
 
-export function searchUsersPaginated (query, page) {
-  return axios.get('users', {params: {page: page, query: query}})
+export function searchUsersPaginated (data) {
+  return axios.get('users', {params: data})
 }
 
 export function searchUsers (search) {

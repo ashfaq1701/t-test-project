@@ -55,17 +55,17 @@ class UserRepository {
         return $user;
     }
 
-    public function searchUsers($request, $query) {
-        if ($request->has('page')) {
-            $users = User::where('email', 'like', $query . '%')
-                ->orWhere('name', 'like', '%' . $query . '%')
-                ->paginate();
-        } else {
-            $users = User::where('email', 'like', $query . '%')
-                ->orWhere('name', 'like', $query . '%')
-                ->get();
+    public function searchUsers($request, $search) {
+        $query = User::query();
+        if (!empty($search)) {
+            $query = $query->where('email', 'like', $search . '%')
+                ->orWhere('name', 'like', '%' . $search . '%');
         }
-        return $users;
+        if ($request->has('page')) {
+            return $query->paginate(10);
+        } else {
+            $query->get();
+        }
     }
 
     public function searchHavingRole($role) {

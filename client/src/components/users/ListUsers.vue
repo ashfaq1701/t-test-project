@@ -1,5 +1,12 @@
 <template>
   <v-container fluid>
+    <div class="text-xs-center is-loading" v-if="isLoading">
+      <v-progress-circular
+        indeterminate
+        color="primary"
+        size="80"
+      ></v-progress-circular>
+    </div>
     <v-layout row justify-center>
       <h2>Manage Users</h2>
     </v-layout>
@@ -58,7 +65,7 @@
 </template>
 
 <script>
-  import {getUsers, deleteUser, searchUsersPaginated} from '../../api/users'
+  import {deleteUser, searchUsersPaginated} from '../../api/users'
   import Confirm from '../parts/Confirm'
 
   export default {
@@ -90,28 +97,27 @@
         page: 1,
         totalPage: 1,
         query: '',
-        alert: false
+        alert: false,
+        isLoading: false
       }
     },
     created () {
-      this.getUsers()
+      let searchData = this.searchData
+      this.getUsers(searchData)
     },
     methods: {
-      getUsers: function () {
+      getUsers: function (searchData) {
         let self = this
-        getUsers(self.page).then(function (resp) {
+        self.$store.commit('setLoading', true)
+        searchUsersPaginated(searchData).then(function (resp) {
           self.users = resp.data.data
           self.page = resp.data.meta.current_page
           self.totalPage = resp.data.meta.last_page
+          self.$store.commit('setLoading', false)
         })
       },
       search: function () {
-        let self = this
-        searchUsersPaginated(self.query, self.page).then(function (resp) {
-          self.users = resp.data.data
-          self.page = resp.data.meta.current_page
-          self.totalPage = resp.data.meta.last_page
-        })
+        this.getUsers(this.searchData)
       },
       editUser: function (userId) {
         this.$router.push('/users/' + userId + '/edit')
@@ -123,24 +129,35 @@
         let self = this
         self.$refs.confirm.open('Delete', 'Are you sure?', { color: 'red' }).then((confirm) => {
           if (confirm === true) {
+            self.$store.commit('setLoading', true)
             deleteUser(userId).then(function () {
-              for (let i = 0; i < self.users.length; i++) {
-                if (self.users[i].id === userId) {
-                  self.users.splice(i, 1)
-                }
-              }
+              let searchData = self.searchData
+              searchData.page = 1
+              self.$store.commit('setLoading', false)
+              self.getUsers(searchData)
             }).catch(function (error) {
               self.$store.commit('setError', error.response.data.message)
+              self.$store.commit('setLoading', false)
             })
           }
         })
       }
     },
     computed: {
-      error () {
+      loading () {
+        return this.$store.state.loading
+      },
+      error: function () {
         return this.$store.state.error
       },
-      currentUser () {
+      searchData: function () {
+        let self = this
+        let data = {}
+        data.query = self.query
+        data.page = 1
+        return data
+      },
+      currentUser: function () {
         return this.$store.getters.currentUser
       }
     },
@@ -155,8 +172,16 @@
           this.$store.commit('setError', null)
         }
       },
-      page () {
-        this.getUsers()
+      page (val) {
+        let searchData = this.searchData
+        searchData.page = val
+        this.getUsers(searchData)
+      },
+      loading (value) {
+        this.isLoading = value
+      },
+      isLoading (value) {
+        this.$store.commit('setLoading', value)
       }
     },
     components: {
@@ -164,3 +189,12 @@
     }
   }
 </script>
+
+<style>
+  div.is-loading {
+    position:fixed;
+    top: 35%;
+    z-index: 1000;
+    left: 50%;
+  }
+</style>
