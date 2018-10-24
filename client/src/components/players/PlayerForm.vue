@@ -165,6 +165,8 @@
         this.passedPlayer = player
         this.passedTeam = team
         this.team = team
+        this.error = ''
+        this.alert = false
         this.dialog = true
       },
       save: function () {

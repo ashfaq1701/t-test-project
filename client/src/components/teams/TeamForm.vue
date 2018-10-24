@@ -48,6 +48,7 @@
               <v-flex xs12 v-if="isAdmin">
                 <v-text-field
                   v-model="team.fund"
+                  type="number"
                   label="Fund"
                   :rules="requiredRules"
                 ></v-text-field>
@@ -104,10 +105,12 @@
       open: function (team) {
         this.team = team
         this.passedTeam = team
-        this.dialog = true
         if (this.team.country !== null && typeof this.team.country !== 'undefined') {
           this.countries.push(this.team.country)
         }
+        this.error = ''
+        this.alert = false
+        this.dialog = true
       },
       save: function () {
         if (!this.valid) {

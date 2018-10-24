@@ -102,6 +102,8 @@
       open: function (player) {
         this.$refs.form.reset()
         this.player = player
+        this.error = ''
+        this.alert = false
         this.dialog = true
       },
       save: function () {
