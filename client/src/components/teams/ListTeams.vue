@@ -1,5 +1,8 @@
 <template>
   <v-container fluid>
+    <v-layout row justify-center>
+      <h2>Team List</h2>
+    </v-layout>
     <div class="text-xs-center is-loading" v-if="isLoading">
       <v-progress-circular
         indeterminate
