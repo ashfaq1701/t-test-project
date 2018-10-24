@@ -49,7 +49,6 @@
           v-model="team"
           :items="teams"
           :loading="teamIsLoading"
-          :rules="notNullRules"
           no-filter
           :search-input.sync="searchTeams"
           item-text="name"
@@ -109,6 +108,7 @@
         <td>{{ props.item.id }}</td>
         <td>{{ props.item.first_name }}</td>
         <td>{{ props.item.last_name }}</td>
+        <td>{{ props.item.age }}</td>
         <td>
           <span
             v-if="props.item.country !== null && typeof props.item.country !== 'undefined'">
@@ -299,6 +299,10 @@
           {
             text: 'Last Name',
             value: 'last_name'
+          },
+          {
+            text: 'Age',
+            value: 'age'
           },
           {
             text: 'Country',

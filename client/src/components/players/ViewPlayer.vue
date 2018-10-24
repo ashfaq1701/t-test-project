@@ -16,6 +16,10 @@
               <span v-if="player !== null">{{ player.last_name }}</span>
             </v-flex>
             <v-flex xs12>
+              <strong>Age: </strong>
+              <span v-if="player !== null">{{ player.age }}</span>
+            </v-flex>
+            <v-flex xs12>
               <strong>Player Role: </strong>
               <span v-if="player !== null && player.player_role !== null">{{ player.player_role.name }}</span>
             </v-flex>

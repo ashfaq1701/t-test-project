@@ -131,7 +131,8 @@
             fab dark small color="primary"
             v-on:click="transferPlayer(props.item)"
             v-if="currentUser !== null && typeof currentUser !== 'undefined' &&
-            (currentUser.hasPermission('transfer_own_player') || currentUser.hasPermission('create_new_transfer'))"
+            ((currentUser.hasPermission('transfer_own_player') && (currentUser.team !== null) && (currentUser.team.id === props.item.team_id)) ||
+            currentUser.hasPermission('create_new_transfer'))"
           >
             <v-icon dark>swap_horiz</v-icon>
           </v-btn>

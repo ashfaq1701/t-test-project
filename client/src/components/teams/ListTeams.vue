@@ -10,6 +10,8 @@
         size="80"
       ></v-progress-circular>
     </div>
+    <v-divider></v-divider>
+    <v-spacer></v-spacer>
     <v-layout row wrap>
       <v-flex xs12>
         <v-alert type="error" dismissible v-model="alert">
@@ -63,6 +65,8 @@
         <v-btn @click="search">Search</v-btn>
       </v-flex>
     </v-layout>
+    <v-divider></v-divider>
+    <v-spacer></v-spacer>
     <team_form
       ref="teamForm"
       @teamUpdated="teamUpdated"></team_form>

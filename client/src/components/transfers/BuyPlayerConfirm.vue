@@ -28,7 +28,7 @@
   import Vue from 'vue'
   import {globals} from '../mixins/globals'
 
-  export default Vue.component('confirm', {
+  export default Vue.component('buy_player_confirm', {
     data () {
       return {
         dialog: false,

@@ -7,3 +7,11 @@ export function createTransfer (data) {
 export function editTransfer (id, data) {
   return axios.put('transfers/' + id, data)
 }
+
+export function searchTransfers (data) {
+  return axios.get('transfers', {params: data})
+}
+
+export function deleteTransfer (id) {
+  return axios.delete('transfers/' + id)
+}
