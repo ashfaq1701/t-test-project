@@ -66,12 +66,16 @@ class TransferTest extends BaseTestCase
         $user1->confirmation_token = null;
         $user1->save();
         $player1 = $user1->team->players[0];
+        $player1->first_name = 'Abc';
+        $player1->save();
         $this->assertNotNull($player1);
 
         $user2 = User::where('email', 'LIKE', 'user.test18@test.local')->first();
         $user2->confirmation_token = null;
         $user2->save();
         $player2 = $user2->team->players[0];
+        $player2->first_name = 'Def';
+        $player2->save();
         $this->assertNotNull($player2);
 
         $token1 = $this->getTokenForUser($user1, "abcdefgh1");
