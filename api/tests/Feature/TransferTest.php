@@ -209,6 +209,51 @@ class TransferTest extends BaseTestCase
         $this->assertTrue($player->price > $playerPrice);
     }
 
+    public function testCompletedTransferCannotBeAccepted() {
+        $this->json('POST', '/api/register', [
+            "email" => "user.test50@test.local",
+            "name" => "User Test 50",
+            "password" => "abcdefgh1",
+            "password_confirmation" => "abcdefgh1"
+        ]);
+        $user1 = User::where('email', 'LIKE', 'user.test50@test.local')->first();
+        $user1->confirmation_token = null;
+        $user1->save();
+        $team = $user1->team;
+        $player = $team->players[0];
+        $token1 = $this->getTokenForUser($user1, "abcdefgh1");
+        $response = $this->json('POST', '/api/transfers', [
+            'player_id' => $player->id,
+            'asking_price' => 1500000
+        ], [
+            'Authentication' => 'Bearer ' . $token1
+        ]);
+        $data = json_decode($response->getContent(), true);
+        $transferArr = $data['data'];
+        $this->json('GET', '/api/logout', [], [
+            'Authorization' => 'Bearer ' . $token1
+        ]);
+
+        $this->json('POST', '/api/register', [
+            "email" => "user.test51@test.local",
+            "name" => "User Test 51",
+            "password" => "abcdefgh1",
+            "password_confirmation" => "abcdefgh1"
+        ]);
+        $user2 = User::where('email', 'LIKE', 'user.test51@test.local')->first();
+        $user2->confirmation_token = null;
+        $user2->save();
+        $token2 = $this->getTokenForUser($user2, "abcdefgh1");
+        $response2 = $this->json('PUT', '/api/transfers/' . $transferArr['id'], [], [
+            'Authentication' => 'Bearer ' . $token2
+        ]);
+        $response2->assertStatus(200);
+        $response3 = $this->json('PUT', '/api/transfers/' . $transferArr['id'], [], [
+            'Authentication' => 'Bearer ' . $token2
+        ]);
+        $response3->assertStatus(500);
+    }
+
     public function testUserCannotBuyOwnPlayer() {
         $this->json('POST', '/api/register', [
             "email" => "user.test43@test.local",

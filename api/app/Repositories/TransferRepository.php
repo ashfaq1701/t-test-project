@@ -111,6 +111,9 @@ class TransferRepository {
         if ($currentUser->hasPermissionTo('accept_transfer_player')) {
             if (!$request->has('is_notified')) {
                 $team = $currentUser->team;
+                if ($transfer->transfer_completed_at != null && $transfer->transferred_to_id != null) {
+                    throw new ValidationException('This player is already sold.');
+                }
                 if (empty($team)) {
                     throw new ValidationException('You do not have any team to buy this player');
                 }
