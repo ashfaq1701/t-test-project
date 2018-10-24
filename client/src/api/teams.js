@@ -8,6 +8,10 @@ export function searchTeamsByName (search) {
   return axios.get('teams', {params: {query: search}})
 }
 
+export function searchTeams (data) {
+  return axios.get('teams', {params: data})
+}
+
 export function editTeam (id, data) {
   return axios.put('teams/' + id, data)
 }
