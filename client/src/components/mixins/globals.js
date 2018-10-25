@@ -1,3 +1,5 @@
+import moment from 'moment'
+
 export const globals = {
   data () {
     return {}
@@ -13,6 +15,9 @@ export const globals = {
         full = full + '.' + p[1]
       }
       return full
+    },
+    formatDate: function (date) {
+      return moment(date).format('YYYY-MM-DD')
     }
   }
 }

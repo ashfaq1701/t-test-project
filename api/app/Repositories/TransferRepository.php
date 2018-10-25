@@ -106,8 +106,19 @@ class TransferRepository {
 
     public function updateTransfer($request, $id) {
         $currentUser = Auth::user();
+        if ($id == -1 && $request->has('mark_notified')
+            && $currentUser->hasPermissionTo('maintain_own_team') && !empty($currentUser->team)) {
+            Transfer::query()->where('placed_from_id', '=', $currentUser->team->id)
+                ->whereNotNull('transfer_completed_at')
+                ->whereNotNull('transferred_to_id')
+                ->update(['is_notified' => 1]);
+            return null;
+        }
         $data = $request->only(['player_id', 'asking_price', 'is_notified']);
         $transfer = Transfer::find($id);
+        if (empty($transfer)) {
+            throw new ValidationException('Transfer could not be found. Please check the ID.');
+        }
         if ($currentUser->hasPermissionTo('accept_transfer_player')) {
             if (!$request->has('is_notified')) {
                 $team = $currentUser->team;

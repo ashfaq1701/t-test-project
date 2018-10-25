@@ -51,7 +51,11 @@ class TransfersController extends Controller {
             'asking_price' => 'sometimes|required|numeric|min:1'
         ]);
         $transfer = $this->transferRepository->updateTransfer($request, $id);
-        return new TransferResource($transfer);
+        if (empty($transfer)) {
+            return '';
+        } else {
+            return new TransferResource($transfer);
+        }
     }
 
     public function destroy($id)

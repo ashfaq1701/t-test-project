@@ -15,3 +15,11 @@ export function searchTransfers (data) {
 export function deleteTransfer (id) {
   return axios.delete('transfers/' + id)
 }
+
+export function getUnnotifiedTransfers () {
+  return axios.get('transfers', {params: {type: 'completed', 'not_notified': 1}})
+}
+
+export function markNotifyTransfers () {
+  return axios.put('transfers/-1', {mark_notified: 1})
+}
