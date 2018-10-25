@@ -76,7 +76,6 @@
       if (typeof this.id !== 'undefined') {
         getUser(this.id).then(function (response) {
           self.user = new User(response.data.data)
-          self.roles = self.user.roles
         })
       }
     },
