@@ -59,37 +59,33 @@ class RegisterController extends Controller
     /**
      * Create a new user instance after a valid registration.
      *
-     * @param  array  $data
-     * @return User
+     * @param  Request  $request
+     * @return UserResource
      */
     protected function create(Request $request)
     {
-        try {
-            $request->validate([
-                'name' => 'required|max:255',
-                'email' => 'required|email|max:255|unique:users',
-                'password' => 'required|min:8|confirmed|regex:/^(?=.*[a-zA-Z])(?=.*[0-9])/',
-            ]);
-            $data = request(['name', 'email', 'password']);
+        $request->validate([
+            'name' => 'required|max:255',
+            'email' => 'required|email|max:255|unique:users',
+            'password' => 'required|min:8|confirmed|regex:/^(?=.*[a-zA-Z])(?=.*[0-9])/',
+        ], [
+            'email' => 'Email has already been taken.'
+        ]);
+        $data = request(['name', 'email', 'password']);
 
-            $user = User::create([
-                'name' => $data['name'],
-                'email' => $data['email'],
-                'password' => bcrypt($data['password']),
-                'confirmation_token' => str_random(40)
-            ]);
+        $user = User::create([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => bcrypt($data['password']),
+            'confirmation_token' => str_random(40)
+        ]);
 
-            $ownerRole = Role::findByName('owner');
-            $user->assignRole($ownerRole);
-            $user->sendConfirmationEmail();
+        $ownerRole = Role::findByName('owner');
+        $user->assignRole($ownerRole);
+        $user->sendConfirmationEmail();
 
-            $this->userRepository->generateTeamAndPlayers($user);
+        $this->userRepository->generateTeamAndPlayers($user);
 
-            return new UserResource($user);
-        } catch (QueryException $e) {
-            return response()->json([
-                'message' => 'Email already taken'
-            ], 400);
-        }
+        return new UserResource($user);
     }
 }

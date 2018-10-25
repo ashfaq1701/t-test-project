@@ -69,6 +69,10 @@ class Handler extends ExceptionHandler
             $exception = $this->unauthenticated($request, $exception);
         }
 
+        if ($exception instanceof \Illuminate\Validation\ValidationException) {
+            $exception = $this->convertValidationExceptionToResponse($exception, $request);
+        }
+
         return $this->customApiResponse($exception);
     }
 
@@ -100,7 +104,9 @@ class Handler extends ExceptionHandler
                 $response['errors'] = $exception->original['errors'];
                 break;
             default:
-                $response['message'] = config('app.debug') ? $exception->getMessage() : 'Something went wrong';
+                $response['message'] = config('app.debug') ?
+                    (method_exists($exception, 'getMessage') ?
+                        $exception->getMessage() : 'Something went wrong') : 'Something went wrong';
                 break;
         }
 
