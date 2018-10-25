@@ -140,7 +140,7 @@
             v-if="currentUser !== null && typeof currentUser !== 'undefined' &&
             (currentUser.hasPermission('accept_transfer_player') && (currentUser.team !== null) &&
             (props.item.placed_from !== null) && (props.item.placed_from.id !== currentUser.team.id) &&
-            (currentUser.team.fund > props.item.asking_price))"
+            (currentUser.team.fund >= props.item.asking_price))"
           >
             <v-icon dark>shopping_cart</v-icon>
           </v-btn>

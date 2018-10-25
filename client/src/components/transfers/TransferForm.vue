@@ -29,7 +29,7 @@
                   v-model="transfer.asking_price"
                   type="number"
                   label="Asking Price"
-                  :rules="requiredRules"
+                  :rules="priceRules"
                 ></v-text-field>
               </v-flex>
             </v-layout>
@@ -68,6 +68,10 @@
         isLoading: false,
         requiredRules: [
           v => !!v || 'This field is required'
+        ],
+        priceRules: [
+          v => !!v || 'This field is required',
+          v => parseInt(v) > 0 || 'Price must be greater than zero'
         ]
       }
     },
