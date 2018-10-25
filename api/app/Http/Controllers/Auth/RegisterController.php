@@ -52,7 +52,9 @@ class RegisterController extends Controller
         return Validator::make($data, [
             'name' => 'required|max:255',
             'email' => 'required|email|max:255|unique:users',
-            'password' => 'required|min:8|confirmed|regex:/^(?=.*[a-zA-Z])(?=.*[0-9])/',
+            'password' => 'required|min:8|confirmed|regex:/^(?=.*[a-zA-Z])(?=.*[0-9])/'
+        ], [
+            'email.unique' => 'Email has already been taken.'
         ]);
     }
 
@@ -64,12 +66,12 @@ class RegisterController extends Controller
      */
     protected function create(Request $request)
     {
-        $request->validate([
+        $this->validate($request, [
             'name' => 'required|max:255',
             'email' => 'required|email|max:255|unique:users',
-            'password' => 'required|min:8|confirmed|regex:/^(?=.*[a-zA-Z])(?=.*[0-9])/',
+            'password' => 'required|min:8|confirmed|regex:/^(?=.*[a-zA-Z])(?=.*[0-9])/'
         ], [
-            'email' => 'Email has already been taken.'
+            'unique' => 'Email has already been taken.'
         ]);
         $data = request(['name', 'email', 'password']);
 

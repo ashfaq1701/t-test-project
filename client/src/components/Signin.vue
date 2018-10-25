@@ -100,7 +100,16 @@ export default {
       }).catch(function (error) {
         self.$store.commit('setLoading', false)
         self.valid = true
-        self.$store.commit('setError', error.response.data.message)
+        if (error.response.data.errors !== null && typeof error.response.data.errors !== 'undefined') {
+          if (error.response.data.errors.email !== null && typeof error.response.data.errors.email !== 'undefined' &&
+            error.response.data.errors.email.length > 0) {
+            self.$store.commit('setError', error.response.data.errors.email[0])
+          } else {
+            self.$store.commit('setError', error.response.data.message)
+          }
+        } else {
+          self.$store.commit('setError', error.response.data.message)
+        }
       })
     }
   },
