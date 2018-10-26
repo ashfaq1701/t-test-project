@@ -120,7 +120,7 @@ class TransferRepository {
             throw new ValidationException('Transfer could not be found. Please check the ID.');
         }
         if ($currentUser->hasPermissionTo('accept_transfer_player')) {
-            if (!$request->has('is_notified')) {
+            if ((!$request->has('is_notified')) && (!$request->has('asking_price'))) {
                 $team = $currentUser->team;
                 if ($transfer->transfer_completed_at != null && $transfer->transferred_to_id != null) {
                     throw new ValidationException('This player is already sold.');
