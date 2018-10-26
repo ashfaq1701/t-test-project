@@ -19,9 +19,9 @@ class UserRepository {
     }
 
     public function storeUser($request) {
-        $req = $request->only(['name', 'email']);
+        $req = $request->only(['name', 'email', 'password']);
         $password = '';
-        if (!array_key_exists('password', $req)) {
+        if (!(array_key_exists('password', $req) && (!empty($req['password'])))) {
             $password = $this->generatePassword();
             $req['password'] = Hash::make($password);
         }
