@@ -80,7 +80,7 @@ class TransferRepository {
         $currentUser = Auth::user();
         $data = $request->only(['player_id', 'asking_price']);
         $player = Player::find($data['player_id']);
-        if ($currentUser->hasPermissionTo('transfer_own_player') && $currentUser->hasRole('owner')) {
+        if ($currentUser->hasPermissionTo('transfer_own_player') && $currentUser->hasRole('owner') && (!$currentUser->hasPermissionTo('create_new_transfer'))) {
             if (empty($currentUser->team)) {
                 throw new ValidationException('You do not have any team and you can not transfer player ' .
                     'owned by others.');
